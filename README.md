@@ -5,7 +5,7 @@
 3. Drag `Checkpoint.app` to your `/Applications` folder
 4. On first launch, right-click the app and choose **Open** to bypass macOS Gatekeeper warning.
 
-🔨Building & Creating a DMG file
+## 🔨Building & Creating a DMG file
 
 (You will need to install create-dmg) - `brew install create-dmg`
 
