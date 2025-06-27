@@ -57,6 +57,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, LogWindowDelegate {
 
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "View Logs", action: #selector(showLogs), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Clear All Logs", action: #selector(clearAllLogs), keyEquivalent: ""))
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
 
@@ -133,21 +134,51 @@ class AppDelegate: NSObject, NSApplicationDelegate, LogWindowDelegate {
         logsWindow.showWindow()
     }
 
+    @objc func clearAllLogs() {
+        let alert = NSAlert()
+        alert.messageText = "Clear All Logs"
+        alert.informativeText = "Are you sure you want to delete all work logs? This cannot be undone."
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Delete All")
+        alert.addButton(withTitle: "Cancel")
+
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn {
+            let deleteSQL = "DELETE FROM work_logs"
+            if sqlite3_exec(database, deleteSQL, nil, nil, nil) == SQLITE_OK {
+                print("All logs cleared successfully")
+
+                // Refresh the logs window if it's open
+                currentLogsWindow?.loadLogs()
+            } else {
+                let errorMessage = String(cString: sqlite3_errmsg(database))
+                print("Could not clear logs: \(errorMessage)")
+            }
+        }
+    }
+
     func saveLog(project: String, description: String) {
         print("AppDelegate saveLog called with project: '\(project)', description: '\(description)'")
+        print("String lengths - project: \(project.count), description: \(description.count)")
 
         let insertSQL = "INSERT INTO work_logs (timestamp, project, description) VALUES (?, ?, ?)"
         var statement: OpaquePointer?
 
         if sqlite3_prepare_v2(database, insertSQL, -1, &statement, nil) == SQLITE_OK {
             let timestamp = ISO8601DateFormatter().string(from: Date())
+            print("Generated timestamp: '\(timestamp)' (length: \(timestamp.count))")
 
-            // FIXED: Use SQLITE_TRANSIENT instead of nil for the destructor
-            // This ensures SQLite makes its own copy of the string data
-            sqlite3_bind_text(statement, 1, timestamp, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
-            sqlite3_bind_text(statement, 2, project, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
-            sqlite3_bind_text(statement, 3, description, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+            // Use a simpler approach - let Swift handle the C string conversion
+            let timestampCString = timestamp.cString(using: .utf8)!
+            let projectCString = project.cString(using: .utf8)!
+            let descriptionCString = description.cString(using: .utf8)!
 
+            // Bind with explicit lengths and SQLITE_TRANSIENT
+            sqlite3_bind_text(statement, 1, timestampCString, Int32(timestampCString.count - 1), unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+            sqlite3_bind_text(statement, 2, projectCString, Int32(projectCString.count - 1), unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+            sqlite3_bind_text(statement, 3, descriptionCString, Int32(descriptionCString.count - 1), unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+
+            print("About to execute insert statement")
             if sqlite3_step(statement) == SQLITE_DONE {
                 print("Log saved successfully to database")
 
@@ -157,9 +188,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, LogWindowDelegate {
 
                 if sqlite3_prepare_v2(database, verifySQL, -1, &verifyStatement, nil) == SQLITE_OK {
                     if sqlite3_step(verifyStatement) == SQLITE_ROW {
-                        let savedTimestamp = String(cString: sqlite3_column_text(verifyStatement, 0))
-                        let savedProject = String(cString: sqlite3_column_text(verifyStatement, 1))
-                        let savedDescription = String(cString: sqlite3_column_text(verifyStatement, 2))
+                        // Use our safe string extraction method
+                        let savedTimestamp = stringFromSQLite(verifyStatement, 0)
+                        let savedProject = stringFromSQLite(verifyStatement, 1)
+                        let savedDescription = stringFromSQLite(verifyStatement, 2)
                         print("Verified saved data - timestamp: '\(savedTimestamp)', project: '\(savedProject)', description: '\(savedDescription)'")
                     }
                 }
@@ -175,6 +207,30 @@ class AppDelegate: NSObject, NSApplicationDelegate, LogWindowDelegate {
         }
 
         sqlite3_finalize(statement)
+    }
+
+    // Helper method for safe string extraction - moved here so saveLog can use it too
+    func stringFromSQLite(_ statement: OpaquePointer?, _ index: Int32) -> String {
+        guard let statement = statement else {
+            print("Statement is nil for column \(index)")
+            return ""
+        }
+
+        // Check if the column is NULL
+        if sqlite3_column_type(statement, index) == SQLITE_NULL {
+            print("Column \(index) is NULL")
+            return ""
+        }
+
+        // Get the text - sqlite3_column_text returns a pointer to UTF-8 text
+        guard let cString = sqlite3_column_text(statement, index) else {
+            print("Column \(index) returned NULL pointer")
+            return ""
+        }
+
+        let result = String(cString: cString)
+        print("Column \(index) value: '\(result)'")
+        return result
     }
 }
 
@@ -449,6 +505,12 @@ class LogsWindow: NSObject, NSWindowDelegate {
 
     // FIXED: Safer string extraction from SQLite with proper NULL checking
     func stringFromSQLite(_ statement: OpaquePointer?, _ index: Int32) -> String {
+        // Use the method from AppDelegate for consistency
+        if let appDelegate = NSApp.delegate as? AppDelegate {
+            return appDelegate.stringFromSQLite(statement, index)
+        }
+
+        // Fallback implementation
         guard let statement = statement else {
             print("Statement is nil for column \(index)")
             return ""
@@ -482,37 +544,6 @@ class LogsWindow: NSObject, NSWindowDelegate {
             return
         }
 
-        // First, let's check what's actually in the database
-        let countSQL = "SELECT COUNT(*) FROM work_logs"
-        var countStatement: OpaquePointer?
-
-        if sqlite3_prepare_v2(database, countSQL, -1, &countStatement, nil) == SQLITE_OK {
-            if sqlite3_step(countStatement) == SQLITE_ROW {
-                let count = sqlite3_column_int(countStatement, 0)
-                print("Total rows in database: \(count)")
-            }
-        }
-        sqlite3_finalize(countStatement)
-
-        // Debug: Let's also check the raw data directly
-        let debugSQL = "SELECT id, timestamp, project, description, length(timestamp), length(project), length(description) FROM work_logs ORDER BY timestamp DESC"
-        var debugStatement: OpaquePointer?
-
-        if sqlite3_prepare_v2(database, debugSQL, -1, &debugStatement, nil) == SQLITE_OK {
-            print("Raw database content:")
-            while sqlite3_step(debugStatement) == SQLITE_ROW {
-                let id = sqlite3_column_int(debugStatement, 0)
-                let timestampLen = sqlite3_column_int(debugStatement, 4)
-                let projectLen = sqlite3_column_int(debugStatement, 5)
-                let descriptionLen = sqlite3_column_int(debugStatement, 6)
-                print("Row \(id): timestamp_len=\(timestampLen), project_len=\(projectLen), description_len=\(descriptionLen)")
-
-                // Check column types
-                print("  Column types: timestamp=\(sqlite3_column_type(debugStatement, 1)), project=\(sqlite3_column_type(debugStatement, 2)), description=\(sqlite3_column_type(debugStatement, 3))")
-            }
-        }
-        sqlite3_finalize(debugStatement)
-
         let querySQL = "SELECT id, timestamp, project, description FROM work_logs ORDER BY timestamp DESC"
         var statement: OpaquePointer?
 
@@ -523,7 +554,7 @@ class LogsWindow: NSObject, NSWindowDelegate {
                 let id = sqlite3_column_int(statement, 0)
                 print("Processing row with ID: \(id)")
 
-                // FIXED: Safe string extraction with proper NULL checking
+                // Use the shared string extraction method
                 let timestamp = stringFromSQLite(statement, 1)
                 let project = stringFromSQLite(statement, 2)
                 let description = stringFromSQLite(statement, 3)
