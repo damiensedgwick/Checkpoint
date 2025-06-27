@@ -1,18 +1,17 @@
-//
-//  AppDelegate.swift
-//  Checkpoint
-//
-//  Created by Damien Sedgwick on 27/06/2025.
-//
-
 import Cocoa
 import SQLite3
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+protocol LogWindowDelegate: AnyObject {
+    func saveLog(project: String, description: String)
+}
+
+class AppDelegate: NSObject, NSApplicationDelegate, LogWindowDelegate {
     var statusBarItem: NSStatusItem!
     var timer: Timer?
     var database: OpaquePointer?
     var intervalMinutes: Int = 60 // Default to 60 minutes
+    var currentLogWindow: LogWindow? // Keep strong reference
+    var currentLogsWindow: LogsWindow? // Keep strong reference
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Hide dock icon - run as menu bar only app
@@ -43,7 +42,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let intervalMenu = NSMenuItem(title: "Set Interval", action: nil, keyEquivalent: "")
         let intervalSubmenu = NSMenu()
 
-        let intervals = [15, 30, 45, 60, 90, 120] // minutes
+        let intervals = [1, 15, 30, 45, 60, 90, 120] // minutes
         for interval in intervals {
             let item = NSMenuItem(title: "\(interval) minutes", action: #selector(setInterval(_:)), keyEquivalent: "")
             item.tag = interval
@@ -115,33 +114,64 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc func showLogWindow() {
         DispatchQueue.main.async {
+            // Dismiss existing window if any
+            self.currentLogWindow?.window?.close()
+
             let logWindow = LogWindow()
             logWindow.delegate = self
+            self.currentLogWindow = logWindow // Keep strong reference
             logWindow.showWindow()
         }
     }
 
     @objc func showLogs() {
+        // Close existing logs window if any
+        currentLogsWindow?.window?.close()
+
         let logsWindow = LogsWindow(database: database)
+        currentLogsWindow = logsWindow // Keep strong reference
         logsWindow.showWindow()
     }
 
     func saveLog(project: String, description: String) {
+        print("AppDelegate saveLog called with project: '\(project)', description: '\(description)'")
+
         let insertSQL = "INSERT INTO work_logs (timestamp, project, description) VALUES (?, ?, ?)"
         var statement: OpaquePointer?
 
         if sqlite3_prepare_v2(database, insertSQL, -1, &statement, nil) == SQLITE_OK {
             let timestamp = ISO8601DateFormatter().string(from: Date())
 
-            sqlite3_bind_text(statement, 1, timestamp, -1, nil)
-            sqlite3_bind_text(statement, 2, project, -1, nil)
-            sqlite3_bind_text(statement, 3, description, -1, nil)
+            // FIXED: Use SQLITE_TRANSIENT instead of nil for the destructor
+            // This ensures SQLite makes its own copy of the string data
+            sqlite3_bind_text(statement, 1, timestamp, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+            sqlite3_bind_text(statement, 2, project, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+            sqlite3_bind_text(statement, 3, description, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
 
             if sqlite3_step(statement) == SQLITE_DONE {
-                print("Log saved successfully")
+                print("Log saved successfully to database")
+
+                // Debug: Verify the data was actually saved
+                let verifySQL = "SELECT timestamp, project, description FROM work_logs WHERE id = last_insert_rowid()"
+                var verifyStatement: OpaquePointer?
+
+                if sqlite3_prepare_v2(database, verifySQL, -1, &verifyStatement, nil) == SQLITE_OK {
+                    if sqlite3_step(verifyStatement) == SQLITE_ROW {
+                        let savedTimestamp = String(cString: sqlite3_column_text(verifyStatement, 0))
+                        let savedProject = String(cString: sqlite3_column_text(verifyStatement, 1))
+                        let savedDescription = String(cString: sqlite3_column_text(verifyStatement, 2))
+                        print("Verified saved data - timestamp: '\(savedTimestamp)', project: '\(savedProject)', description: '\(savedDescription)'")
+                    }
+                }
+                sqlite3_finalize(verifyStatement)
+
             } else {
-                print("Could not save log")
+                let errorMessage = String(cString: sqlite3_errmsg(database))
+                print("Could not save log to database: \(errorMessage)")
             }
+        } else {
+            let errorMessage = String(cString: sqlite3_errmsg(database))
+            print("Could not prepare SQL statement: \(errorMessage)")
         }
 
         sqlite3_finalize(statement)
@@ -153,9 +183,11 @@ class LogWindow: NSObject, NSWindowDelegate {
     var window: NSWindow!
     var projectField: NSTextField!
     var descriptionField: NSTextView!
-    var delegate: AppDelegate?
+    weak var delegate: LogWindowDelegate?
 
     func showWindow() {
+        print("LogWindow showWindow called")
+
         // Create window
         window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
@@ -169,7 +201,12 @@ class LogWindow: NSObject, NSWindowDelegate {
         window.level = .floating
         window.center()
 
+        // Keep a strong reference to prevent deallocation
+        window.isReleasedWhenClosed = false
+
         setupUI()
+
+        print("Delegate set to: \(String(describing: delegate))")
 
         // Make window key and bring to front
         NSApp.activate(ignoringOtherApps: true)
@@ -205,13 +242,19 @@ class LogWindow: NSObject, NSWindowDelegate {
         scrollView.documentView = descriptionField
         contentView.addSubview(scrollView)
 
-        // Save button
+        // Save button - explicit target/action setup
         let saveButton = NSButton(frame: NSRect(x: 310, y: 20, width: 70, height: 32))
         saveButton.title = "Save"
         saveButton.bezelStyle = .rounded
         saveButton.keyEquivalent = "\r"
+
+        // Debug: Print to verify button creation
+        print("Creating save button with target: \(self)")
+
+        // Set target and action explicitly
         saveButton.target = self
-        saveButton.action = #selector(saveLog)
+        saveButton.action = #selector(LogWindow.saveLog)
+
         contentView.addSubview(saveButton)
 
         // Set focus to project field
@@ -219,8 +262,12 @@ class LogWindow: NSObject, NSWindowDelegate {
     }
 
     @objc func saveLog() {
+        print("Save button clicked!")
+
         let project = projectField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
         let description = descriptionField.string.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        print("Save button clicked - Project: '\(project)', Description: '\(description)'")
 
         if project.isEmpty || description.isEmpty {
             let alert = NSAlert()
@@ -232,8 +279,16 @@ class LogWindow: NSObject, NSWindowDelegate {
             return
         }
 
+        print("Calling delegate to save log")
         delegate?.saveLog(project: project, description: description)
+
+        print("Closing window")
         window.close()
+
+        // Clear the reference in the app delegate
+        if let appDelegate = delegate as? AppDelegate {
+            appDelegate.currentLogWindow = nil
+        }
     }
 
     // Prevent window from closing without saving
@@ -266,23 +321,41 @@ class LogWindow: NSObject, NSWindowDelegate {
     }
 }
 
-// MARK: - Logs Viewer Window
-class LogsWindow: NSObject, NSWindowDelegate, NSTableViewDataSource, NSTableViewDelegate {
+// MARK: - Work Log Data Model
+struct WorkLog {
+    let id: Int
+    let timestamp: String
+    let project: String
+    let description: String
+
+    var formattedDate: String {
+        let formatter = ISO8601DateFormatter()
+        if let date = formatter.date(from: timestamp) {
+            let displayFormatter = DateFormatter()
+            displayFormatter.dateStyle = .short
+            displayFormatter.timeStyle = .short
+            return displayFormatter.string(from: date)
+        }
+        return timestamp
+    }
+}
+
+// MARK: - Logs Viewer Window with Modern Table View
+class LogsWindow: NSObject, NSWindowDelegate {
     var window: NSWindow!
     var tableView: NSTableView!
     var database: OpaquePointer?
-    var logs: [(id: Int, timestamp: String, project: String, description: String)] = []
+    var logs: [WorkLog] = []
 
     init(database: OpaquePointer?) {
         self.database = database
         super.init()
-        loadLogs()
     }
 
     func showWindow() {
         window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 800, height: 600),
-            styleMask: [.titled, .closable, .resizable],
+            contentRect: NSRect(x: 0, y: 0, width: 900, height: 600),
+            styleMask: [.titled, .closable, .resizable, .miniaturizable],
             backing: .buffered,
             defer: false
         )
@@ -290,88 +363,275 @@ class LogsWindow: NSObject, NSWindowDelegate, NSTableViewDataSource, NSTableView
         window.title = "Work Logs"
         window.delegate = self
         window.center()
+        window.isReleasedWhenClosed = false
+        window.minSize = NSSize(width: 600, height: 400)
 
         setupUI()
+        loadLogs()
         window.makeKeyAndOrderFront(nil)
     }
 
     func setupUI() {
         let contentView = NSView(frame: window.contentRect(forFrameRect: window.frame))
+        contentView.wantsLayer = true
         window.contentView = contentView
 
+        // Create scroll view
         let scrollView = NSScrollView(frame: contentView.bounds)
         scrollView.autoresizingMask = [.width, .height]
         scrollView.hasVerticalScroller = true
+        scrollView.hasHorizontalScroller = false
+        scrollView.autohidesScrollers = false
+        scrollView.borderType = .noBorder
 
+        // Create table view
         tableView = NSTableView()
+        tableView.style = .inset
+        tableView.headerView = NSTableHeaderView()
+        tableView.cornerView = nil
+        tableView.allowsColumnResizing = true
+        tableView.allowsColumnReordering = false
+        tableView.intercellSpacing = NSSize(width: 0, height: 0)
+        tableView.usesAlternatingRowBackgroundColors = true
+        tableView.gridStyleMask = [.solidHorizontalGridLineMask]
+
+        // Create columns with proper identifiers
+        createTableColumns()
+
+        // Set up data source and delegate
         tableView.dataSource = self
         tableView.delegate = self
 
-        // Create columns
-        let timestampColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("timestamp"))
-        timestampColumn.title = "Time"
-        timestampColumn.width = 150
-        tableView.addTableColumn(timestampColumn)
+        scrollView.documentView = tableView
+        contentView.addSubview(scrollView)
 
+        // Add refresh button
+        let refreshButton = NSButton(frame: NSRect(x: 20, y: contentView.bounds.height - 40, width: 80, height: 24))
+        refreshButton.title = "Refresh"
+        refreshButton.bezelStyle = .rounded
+        refreshButton.target = self
+        refreshButton.action = #selector(refreshLogs)
+        refreshButton.autoresizingMask = [.maxXMargin, .minYMargin]
+        contentView.addSubview(refreshButton)
+
+        print("Modern table view setup complete")
+    }
+
+    func createTableColumns() {
+        // Time column
+        let timeColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("time"))
+        timeColumn.title = "Time"
+        timeColumn.width = 140
+        timeColumn.minWidth = 120
+        timeColumn.maxWidth = 180
+        tableView.addTableColumn(timeColumn)
+
+        // Project column
         let projectColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("project"))
         projectColumn.title = "Project"
         projectColumn.width = 150
+        projectColumn.minWidth = 100
+        projectColumn.maxWidth = 250
         tableView.addTableColumn(projectColumn)
 
+        // Description column
         let descriptionColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("description"))
         descriptionColumn.title = "Description"
         descriptionColumn.width = 400
+        descriptionColumn.minWidth = 200
+        descriptionColumn.resizingMask = .autoresizingMask
         tableView.addTableColumn(descriptionColumn)
+    }
 
-        scrollView.documentView = tableView
-        contentView.addSubview(scrollView)
+    @objc func refreshLogs() {
+        loadLogs()
+    }
+
+    // FIXED: Safer string extraction from SQLite with proper NULL checking
+    func stringFromSQLite(_ statement: OpaquePointer?, _ index: Int32) -> String {
+        guard let statement = statement else {
+            print("Statement is nil for column \(index)")
+            return ""
+        }
+
+        // Check if the column is NULL
+        if sqlite3_column_type(statement, index) == SQLITE_NULL {
+            print("Column \(index) is NULL")
+            return ""
+        }
+
+        // Get the text - sqlite3_column_text returns a pointer to UTF-8 text
+        guard let cString = sqlite3_column_text(statement, index) else {
+            print("Column \(index) returned NULL pointer")
+            return ""
+        }
+
+        let result = String(cString: cString)
+        print("Column \(index) value: '\(result)'")
+        return result
     }
 
     func loadLogs() {
         logs.removeAll()
 
+        guard let database = database else {
+            print("Database is nil")
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+            return
+        }
+
+        // First, let's check what's actually in the database
+        let countSQL = "SELECT COUNT(*) FROM work_logs"
+        var countStatement: OpaquePointer?
+
+        if sqlite3_prepare_v2(database, countSQL, -1, &countStatement, nil) == SQLITE_OK {
+            if sqlite3_step(countStatement) == SQLITE_ROW {
+                let count = sqlite3_column_int(countStatement, 0)
+                print("Total rows in database: \(count)")
+            }
+        }
+        sqlite3_finalize(countStatement)
+
+        // Debug: Let's also check the raw data directly
+        let debugSQL = "SELECT id, timestamp, project, description, length(timestamp), length(project), length(description) FROM work_logs ORDER BY timestamp DESC"
+        var debugStatement: OpaquePointer?
+
+        if sqlite3_prepare_v2(database, debugSQL, -1, &debugStatement, nil) == SQLITE_OK {
+            print("Raw database content:")
+            while sqlite3_step(debugStatement) == SQLITE_ROW {
+                let id = sqlite3_column_int(debugStatement, 0)
+                let timestampLen = sqlite3_column_int(debugStatement, 4)
+                let projectLen = sqlite3_column_int(debugStatement, 5)
+                let descriptionLen = sqlite3_column_int(debugStatement, 6)
+                print("Row \(id): timestamp_len=\(timestampLen), project_len=\(projectLen), description_len=\(descriptionLen)")
+
+                // Check column types
+                print("  Column types: timestamp=\(sqlite3_column_type(debugStatement, 1)), project=\(sqlite3_column_type(debugStatement, 2)), description=\(sqlite3_column_type(debugStatement, 3))")
+            }
+        }
+        sqlite3_finalize(debugStatement)
+
         let querySQL = "SELECT id, timestamp, project, description FROM work_logs ORDER BY timestamp DESC"
         var statement: OpaquePointer?
+
+        print("Executing query: \(querySQL)")
 
         if sqlite3_prepare_v2(database, querySQL, -1, &statement, nil) == SQLITE_OK {
             while sqlite3_step(statement) == SQLITE_ROW {
                 let id = sqlite3_column_int(statement, 0)
-                let timestamp = String(cString: sqlite3_column_text(statement, 1))
-                let project = String(cString: sqlite3_column_text(statement, 2))
-                let description = String(cString: sqlite3_column_text(statement, 3))
+                print("Processing row with ID: \(id)")
 
-                logs.append((id: Int(id), timestamp: timestamp, project: project, description: description))
+                // FIXED: Safe string extraction with proper NULL checking
+                let timestamp = stringFromSQLite(statement, 1)
+                let project = stringFromSQLite(statement, 2)
+                let description = stringFromSQLite(statement, 3)
+
+                let log = WorkLog(
+                    id: Int(id),
+                    timestamp: timestamp,
+                    project: project,
+                    description: description
+                )
+
+                logs.append(log)
+                print("Loaded log: ID=\(id), timestamp='\(timestamp)', project='\(project)', description='\(description)'")
             }
+            print("Loaded \(logs.count) logs from database")
+        } else {
+            let errorMessage = String(cString: sqlite3_errmsg(database))
+            print("Could not prepare statement: \(errorMessage)")
         }
 
         sqlite3_finalize(statement)
-        tableView?.reloadData()
+
+        // Reload table on main thread
+        DispatchQueue.main.async {
+            print("Reloading table view with \(self.logs.count) items")
+            self.tableView.reloadData()
+        }
     }
 
-    // MARK: - Table View Data Source
+    // Clean up reference when window closes
+    func windowWillClose(_ notification: Notification) {
+        if let appDelegate = NSApp.delegate as? AppDelegate {
+            if appDelegate.currentLogsWindow === self {
+                appDelegate.currentLogsWindow = nil
+            }
+        }
+    }
+}
+
+// MARK: - Table View Data Source
+extension LogsWindow: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
+        print("numberOfRows called, returning: \(logs.count)")
         return logs.count
     }
+}
 
-    func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
-        let log = logs[row]
-
-        switch tableColumn?.identifier.rawValue {
-        case "timestamp":
-            let formatter = ISO8601DateFormatter()
-            if let date = formatter.date(from: log.timestamp) {
-                let displayFormatter = DateFormatter()
-                displayFormatter.dateStyle = .short
-                displayFormatter.timeStyle = .short
-                return displayFormatter.string(from: date)
-            }
-            return log.timestamp
-        case "project":
-            return log.project
-        case "description":
-            return log.description
-        default:
+// MARK: - Table View Delegate
+extension LogsWindow: NSTableViewDelegate {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        guard row < logs.count,
+              let identifier = tableColumn?.identifier else {
+            print("Invalid row \(row) or identifier")
             return nil
         }
+
+        let log = logs[row]
+        print("Creating cell for row \(row), column \(identifier.rawValue)")
+        print("Log data: timestamp='\(log.timestamp)', project='\(log.project)', description='\(log.description)'")
+
+        // Create or reuse cell view
+        var cellView = tableView.makeView(withIdentifier: identifier, owner: self) as? NSTableCellView
+
+        if cellView == nil {
+            cellView = NSTableCellView()
+            cellView?.identifier = identifier
+
+            // Create text field
+            let textField = NSTextField()
+            textField.isEditable = false
+            textField.isBordered = false
+            textField.backgroundColor = .clear
+            textField.translatesAutoresizingMaskIntoConstraints = false
+
+            cellView?.addSubview(textField)
+            cellView?.textField = textField
+
+            // Add constraints
+            NSLayoutConstraint.activate([
+                textField.leadingAnchor.constraint(equalTo: cellView!.leadingAnchor, constant: 4),
+                textField.trailingAnchor.constraint(equalTo: cellView!.trailingAnchor, constant: -4),
+                textField.centerYAnchor.constraint(equalTo: cellView!.centerYAnchor)
+            ])
+        }
+
+        // Set the cell content based on column
+        var cellValue = ""
+        switch identifier.rawValue {
+        case "time":
+            cellValue = log.formattedDate
+            cellView?.textField?.font = NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .regular)
+        case "project":
+            cellValue = log.project
+            cellView?.textField?.font = NSFont.systemFont(ofSize: 13, weight: .medium)
+        case "description":
+            cellValue = log.description
+            cellView?.textField?.font = NSFont.systemFont(ofSize: 13)
+            cellView?.textField?.lineBreakMode = .byTruncatingTail
+        default:
+            cellValue = ""
+        }
+
+        cellView?.textField?.stringValue = cellValue
+        print("Set cell value for \(identifier.rawValue): '\(cellValue)'")
+        return cellView
+    }
+
+    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+        return 22
     }
 }
