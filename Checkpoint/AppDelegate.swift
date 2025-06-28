@@ -49,7 +49,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, LogWindowDelegate {
         let intervalMenu = NSMenuItem(title: "Set Interval", action: nil, keyEquivalent: "")
         let intervalSubmenu = NSMenu()
 
-        let intervals = [1, 15, 30, 45, 60, 90, 120] // minutes
+        let intervals = [15, 30, 45, 60, 90, 120] // minutes
         for interval in intervals {
             let item = NSMenuItem(title: "\(interval) minutes", action: #selector(setInterval(_:)), keyEquivalent: "")
             item.tag = interval
