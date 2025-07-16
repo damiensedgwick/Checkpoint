@@ -116,12 +116,7 @@ struct LogReadingView: View {
                         }
                         .width(min: 300)
                         
-                        TableColumn("Duration") { entry in
-                            Text(entry.formattedDuration)
-                                .font(.system(.body, design: .monospaced))
-                                .foregroundColor(.secondary)
-                        }
-                        .width(min: 80, ideal: 80)
+
                         
                         TableColumn("Actions") { entry in
                             Button(action: {

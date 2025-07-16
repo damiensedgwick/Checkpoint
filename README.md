@@ -13,7 +13,6 @@ A beautiful macOS menu bar app built with SwiftUI that helps you track your work
 
 ### 📝 Work Logging
 - **Quick logging**: Log your work sessions with project and description
-- **Duration tracking**: Optionally include session duration
 - **Smart suggestions**: Quick-select common project types
 - **Rich descriptions**: Multi-line text support for detailed logging
 
@@ -26,7 +25,7 @@ A beautiful macOS menu bar app built with SwiftUI that helps you track your work
 - **Bulk operations**: Clear all logs when needed
 
 ### ⚙️ Settings & Configuration
-- **Default interval**: Set your preferred work session duration
+- **Default interval**: Set your preferred work session interval
 - **Data management**: Export and reset functionality
 - **App information**: Version and build details
 
@@ -58,8 +57,7 @@ A beautiful macOS menu bar app built with SwiftUI that helps you track your work
 ### Logging Your Work
 1. When your timer completes (or anytime), select "Log work now"
 2. Fill in the project name and description
-3. Optionally include the session duration
-4. Click "Save Log" to record your work
+3. Click "Save Log" to record your work
 
 ### Viewing Your Logs
 1. Select "View logs" from the menu
