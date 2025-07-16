@@ -4,8 +4,8 @@ A quick and dirty macOS menu bar app built with SwiftUI that helps you track you
 
 ## !IMPORTANT
 
-v1.2.0 is probably not backwards compatible and should have probably been marked as a 2.0.0 release. I am unsure if saved logs will still be visible
-so it is probably worth taking a screenshot of them before installing the new version if you need to reference them.
+v2.0.0 is probably not backwards compatible with v1.2.0. I am unsure if saved logs will still be visible so it is probably worth taking a screenshot
+of them before installing the new version if you need to reference them.
 
 ## Installation
 
