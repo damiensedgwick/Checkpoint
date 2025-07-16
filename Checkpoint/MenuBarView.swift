@@ -13,7 +13,6 @@ struct MenuBarView: View {
     @StateObject private var timerService = TimerService.shared
     
     let intervals: [TimeInterval] = [
-        60,       // 1 minute (for testing)
         15 * 60,  // 15 minutes
         30 * 60,  // 30 minutes
         45 * 60,  // 45 minutes
