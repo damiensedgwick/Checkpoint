@@ -17,6 +17,10 @@ class DataManager: ObservableObject {
     
     private init() {
         loadData()
+        // Auto-start timer if not already running
+        if !isTimerRunning {
+            startTimer()
+        }
     }
     
     // MARK: - Data Persistence

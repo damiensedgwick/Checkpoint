@@ -10,29 +10,18 @@ import SwiftUI
 struct LogReadingView: View {
     @StateObject private var dataManager = DataManager.shared
     @State private var searchText = ""
-    @State private var selectedProject: String?
     @State private var showingDeleteAlert = false
     @State private var entryToDelete: LogEntry?
     
     private var filteredEntries: [LogEntry] {
-        var entries = dataManager.logEntries
-        
-        if !searchText.isEmpty {
-            entries = entries.filter { entry in
+        if searchText.isEmpty {
+            return dataManager.logEntries
+        } else {
+            return dataManager.logEntries.filter { entry in
                 entry.project.localizedCaseInsensitiveContains(searchText) ||
                 entry.description.localizedCaseInsensitiveContains(searchText)
             }
         }
-        
-        if let selectedProject = selectedProject {
-            entries = entries.filter { $0.project == selectedProject }
-        }
-        
-        return entries
-    }
-    
-    private var uniqueProjects: [String] {
-        Array(Set(dataManager.logEntries.map { $0.project })).sorted()
     }
     
     var body: some View {
@@ -56,51 +45,18 @@ struct LogReadingView: View {
                             .cornerRadius(8)
                     }
                     
-                    // Search and filter bar
-                    HStack(spacing: 12) {
-                        HStack {
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.secondary)
-                            
-                            TextField("Search logs...", text: $searchText)
-                                .textFieldStyle(.plain)
-                        }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(Color(.controlBackgroundColor))
-                        .cornerRadius(8)
+                    // Search bar
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.secondary)
                         
-                        Menu {
-                            Button("All Projects") {
-                                selectedProject = nil
-                            }
-                            
-                            Divider()
-                            
-                            ForEach(uniqueProjects, id: \.self) { project in
-                                Button(project) {
-                                    selectedProject = project
-                                }
-                            }
-                        } label: {
-                            HStack {
-                                Text(selectedProject ?? "All Projects")
-                                Image(systemName: "chevron.down")
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(Color(.controlBackgroundColor))
-                            .cornerRadius(8)
-                        }
-                        .menuStyle(.borderlessButton)
-                        
-                        Button("Clear All") {
-                            showingDeleteAlert = true
-                        }
-                        .buttonStyle(.plain)
-                        .foregroundColor(.red)
-                        .disabled(dataManager.logEntries.isEmpty)
+                        TextField("Search logs...", text: $searchText)
+                            .textFieldStyle(.plain)
                     }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color(.controlBackgroundColor))
+                    .cornerRadius(8)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
@@ -182,7 +138,7 @@ struct LogReadingView: View {
                     .tableStyle(.inset(alternatesRowBackgrounds: true))
                 }
             }
-            .frame(minWidth: 900, minHeight: 600)
+            .frame(minWidth: 700, minHeight: 400)
             .background(Color(.windowBackgroundColor))
         }
         .alert("Delete Log", isPresented: $showingDeleteAlert) {
@@ -191,16 +147,10 @@ struct LogReadingView: View {
                 if let entry = entryToDelete {
                     dataManager.deleteLogEntry(entry)
                     entryToDelete = nil
-                } else {
-                    dataManager.clearAllLogs()
                 }
             }
         } message: {
-            if entryToDelete != nil {
-                Text("Are you sure you want to delete this log entry?")
-            } else {
-                Text("Are you sure you want to delete all log entries? This action cannot be undone.")
-            }
+            Text("Are you sure you want to delete this log entry?")
         }
     }
 }

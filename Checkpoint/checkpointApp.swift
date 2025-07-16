@@ -14,18 +14,23 @@ struct checkpointApp: App {
 
     var body: some Scene {
         // Menu bar controls
-        MenuBarExtra("Checkpoint", systemImage: "hourglass") {
+        MenuBarExtra {
             MenuBarView()
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "hourglass")
+                if dataManager.isTimerRunning {
+                    // Fixed width for timer text to prevent wiggle
+                    Text(timerService.formatTime(timerService.timeRemaining))
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundColor(timerService.timeRemaining < 300 ? .red : .primary)
+                        .frame(width: 38, alignment: .trailing) // "00:00" is 5 chars, 38 is a good width for monospaced caption
+                }
+            }
         }
-        .menuBarExtraStyle(.menu)
+        .menuBarExtraStyle(.window)
 
-        // Timer window
-        WindowGroup(id: "timer") {
-            TimerWindowView()
-        }
-        .windowResizability(.contentSize)
-        .windowStyle(.titleBar)
-        .defaultSize(width: 300, height: 400)
+
 
         // Logging window
         WindowGroup(id: "logging") {
@@ -33,7 +38,7 @@ struct checkpointApp: App {
         }
         .windowResizability(.contentSize)
         .windowStyle(.titleBar)
-        .defaultSize(width: 500, height: 600)
+        .defaultSize(width: 350, height: 280)
 
         // Logs window
         WindowGroup(id: "log-reading") {
@@ -41,7 +46,7 @@ struct checkpointApp: App {
         }
         .windowResizability(.contentSize)
         .windowStyle(.titleBar)
-        .defaultSize(width: 900, height: 600)
+        .defaultSize(width: 700, height: 400)
         
         // Settings window
         WindowGroup(id: "settings") {

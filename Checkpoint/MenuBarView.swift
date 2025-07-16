@@ -21,33 +21,10 @@ struct MenuBarView: View {
     ]
 
     var body: some View {
-        // Timer Status
-        if dataManager.isTimerRunning {
-            VStack(spacing: 4) {
-                Text("Timer Running")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                
-                Text(timerService.formatTime(timerService.timeRemaining))
-                    .font(.system(.title2, design: .monospaced))
-                    .fontWeight(.bold)
-                    .foregroundColor(timerService.timeRemaining < 300 ? .red : .primary)
-            }
-            .padding(.vertical, 8)
-            
-            Divider()
-            
-            Button("Show Timer Window") {
-                openWindow(id: "timer")
-            }
-            .keyboardShortcut("w", modifiers: .command)
-        }
-        
         // Add a new log
         Button("Log work now") {
             openWindow(id: "logging")
         }
-        .keyboardShortcut("l", modifiers: .command)
 
         Divider()
 
@@ -56,12 +33,10 @@ struct MenuBarView: View {
             Button("Stop Timer") {
                 dataManager.stopTimer()
             }
-            .keyboardShortcut("s", modifiers: .command)
         } else {
             Button("Start Timer") {
                 dataManager.startTimer()
             }
-            .keyboardShortcut("t", modifiers: .command)
         }
 
         Divider()
@@ -84,26 +59,18 @@ struct MenuBarView: View {
         Button("View logs") {
             openWindow(id: "log-reading")
         }
-        .keyboardShortcut("v", modifiers: .command)
-
-        Button("Clear all logs") {
-            dataManager.clearAllLogs()
-        }
-        .disabled(dataManager.logEntries.isEmpty)
 
         Divider()
         
         Button("Settings") {
             openWindow(id: "settings")
         }
-        .keyboardShortcut(",", modifiers: .command)
 
         Divider()
 
         Button("Quit") {
             NSApplication.shared.terminate(nil)
         }
-        .keyboardShortcut("q", modifiers: .command)
     }
 
     // Helper function to format time intervals
