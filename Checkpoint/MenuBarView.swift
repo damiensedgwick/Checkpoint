@@ -36,9 +36,8 @@ struct MenuBarView: View {
 
         Divider()
 
-
         Button("View logs") {
-            // openWindow(id: "log-reading")
+            openWindow(id: "log-reading")
         }
 
         Button("Clear all logs") {

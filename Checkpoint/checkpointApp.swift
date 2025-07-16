@@ -26,8 +26,19 @@ struct checkpointApp: App {
     var body: some Scene {
         // Menu bar controls
         MenuBarExtra("Checkpoint", systemImage: "hourglass") {
-            MenuBarView(currentInterval: $currentInterval, intervals: intervals, changeInterval: changeInterval)
+            MenuBarView(
+                currentInterval: $currentInterval,
+                intervals: intervals,
+                changeInterval: changeInterval
+            )
         }
         .menuBarExtraStyle(.menu)
+
+        // Logs window
+        WindowGroup(id: "log-reading") {
+            LogReadingView()
+        }
+        .windowResizability(.contentSize)
+        .windowStyle(.titleBar)
     }
 }
