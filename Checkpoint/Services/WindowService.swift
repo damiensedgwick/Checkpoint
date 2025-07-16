@@ -17,7 +17,9 @@ class WindowService: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.shouldOpenLoggingWindow = true
+            Task { @MainActor in
+                self?.shouldOpenLoggingWindow = true
+            }
         }
     }
     

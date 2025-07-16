@@ -49,7 +49,7 @@ struct checkpointApp: App {
         .windowResizability(.contentSize)
         .windowStyle(.titleBar)
         .defaultSize(width: 350, height: 280)
-        .onChange(of: windowService.shouldOpenLoggingWindow) { shouldOpen in
+        .onChange(of: windowService.shouldOpenLoggingWindow) { oldValue, shouldOpen in
             if shouldOpen {
                 openWindow(id: "logging")
                 windowService.shouldOpenLoggingWindow = false
