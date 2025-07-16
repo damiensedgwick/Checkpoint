@@ -9,14 +9,59 @@ import SwiftUI
 
 struct MenuBarView: View {
     @Environment(\.openWindow) private var openWindow
-    @Binding var currentInterval: TimeInterval
-    let intervals: [TimeInterval]
-    let changeInterval: (TimeInterval) -> Void
+    @StateObject private var dataManager = DataManager.shared
+    @StateObject private var timerService = TimerService.shared
+    
+    let intervals: [TimeInterval] = [
+        15 * 60,  // 15 minutes
+        30 * 60,  // 30 minutes
+        45 * 60,  // 45 minutes
+        60 * 60,  // 60 minutes (1 hour)
+        120 * 60  // 120 minutes (2 hours)
+    ]
 
     var body: some View {
+        // Timer Status
+        if dataManager.isTimerRunning {
+            VStack(spacing: 4) {
+                Text("Timer Running")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Text(timerService.formatTime(timerService.timeRemaining))
+                    .font(.system(.title2, design: .monospaced))
+                    .fontWeight(.bold)
+                    .foregroundColor(timerService.timeRemaining < 300 ? .red : .primary)
+            }
+            .padding(.vertical, 8)
+            
+            Divider()
+            
+            Button("Show Timer Window") {
+                openWindow(id: "timer")
+            }
+            .keyboardShortcut("w", modifiers: .command)
+        }
+        
         // Add a new log
         Button("Log work now") {
-            // openWindow(id: "logging")
+            openWindow(id: "logging")
+        }
+        .keyboardShortcut("l", modifiers: .command)
+
+        Divider()
+
+        // Timer Controls
+        if dataManager.isTimerRunning {
+            Button("Stop Timer") {
+                dataManager.stopTimer()
+            }
+            .keyboardShortcut("s", modifiers: .command)
+        } else {
+            Button("Start Timer") {
+                dataManager.startTimer()
+            }
+            .keyboardShortcut("t", modifiers: .command)
         }
 
         Divider()
@@ -25,9 +70,9 @@ struct MenuBarView: View {
         Menu("Set Interval") {
             ForEach(intervals, id: \.self) { interval in
                 Button(action: {
-                    changeInterval(interval)
+                    dataManager.updateInterval(interval)
                 }) {
-                    Text(interval == currentInterval ?
+                    Text(interval == dataManager.currentInterval ?
                          "\(formatInterval(interval)) ✓" :
                             formatInterval(interval))
                 }
@@ -39,10 +84,19 @@ struct MenuBarView: View {
         Button("View logs") {
             openWindow(id: "log-reading")
         }
+        .keyboardShortcut("v", modifiers: .command)
 
         Button("Clear all logs") {
-            // openWindow(id: "log-reading")
+            dataManager.clearAllLogs()
         }
+        .disabled(dataManager.logEntries.isEmpty)
+
+        Divider()
+        
+        Button("Settings") {
+            openWindow(id: "settings")
+        }
+        .keyboardShortcut(",", modifiers: .command)
 
         Divider()
 
@@ -65,9 +119,5 @@ struct MenuBarView: View {
 }
 
 #Preview {
-    MenuBarView(
-        currentInterval: .constant(30 * 60),
-        intervals: [15 * 60, 30 * 60, 45 * 60, 60 * 60, 120 * 60],
-        changeInterval: { _ in }
-    )
+    MenuBarView()
 }
