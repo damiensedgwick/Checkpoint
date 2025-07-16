@@ -7,6 +7,24 @@
 
 import SwiftUI
 
+struct TimerLabelView: View {
+    @StateObject private var dataManager = DataManager.shared
+    @StateObject private var timerService = TimerService.shared
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "hourglass")
+            if timerService.timeRemaining > 0 {
+                Text(timerService.formatTime(timerService.timeRemaining))
+                    .font(.system(.caption, design: .monospaced))
+                    .foregroundColor(timerService.timeRemaining < 300 ? .red : .primary)
+                    .frame(width: 45, alignment: .leading) // Fixed width for "00:00" format
+            }
+        }
+        .frame(width: 100)
+    }
+}
+
 @main
 struct checkpointApp: App {
     @StateObject private var dataManager = DataManager.shared
@@ -17,20 +35,9 @@ struct checkpointApp: App {
         MenuBarExtra {
             MenuBarView()
         } label: {
-            HStack(spacing: 8) {
-                Image(systemName: "hourglass")
-                if dataManager.isTimerRunning {
-                    // Fixed width for timer text to prevent wiggle
-                    Text(timerService.formatTime(timerService.timeRemaining))
-                        .font(.system(.caption, design: .monospaced))
-                        .foregroundColor(timerService.timeRemaining < 300 ? .red : .primary)
-                        .frame(width: 38, alignment: .trailing) // "00:00" is 5 chars, 38 is a good width for monospaced caption
-                }
-            }
+            TimerLabelView()
         }
-        .menuBarExtraStyle(.window)
-
-
+        .menuBarExtraStyle(.menu)
 
         // Logging window
         WindowGroup(id: "logging") {

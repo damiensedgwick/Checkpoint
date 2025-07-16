@@ -2,6 +2,10 @@ import Foundation
 import Combine
 import UserNotifications
 
+extension Notification.Name {
+    static let timerCompleted = Notification.Name("timerCompleted")
+}
+
 @MainActor
 class TimerService: ObservableObject {
     static let shared = TimerService()
@@ -11,6 +15,7 @@ class TimerService: ObservableObject {
     
     private var timer: Timer?
     private var cancellables = Set<AnyCancellable>()
+    private var isRestarting = false
     
     private init() {
         setupBindings()
@@ -56,10 +61,21 @@ class TimerService: ObservableObject {
     private func updateTimeRemaining() {
         timeRemaining = DataManager.shared.remainingTime
         
-        if DataManager.shared.isTimerComplete {
+        if DataManager.shared.isTimerComplete && !isRestarting {
+            isRestarting = true
+            
+            // Stop the current timer first
             stopTimer()
             DataManager.shared.stopTimer()
+            
+            // Show notification
             showTimerCompleteNotification()
+            
+            // Restart timer after a brief delay to avoid race conditions
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                DataManager.shared.startTimer()
+                self.isRestarting = false
+            }
         }
     }
     
@@ -67,6 +83,10 @@ class TimerService: ObservableObject {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
             if let error = error {
                 print("Notification permission error: \(error)")
+            } else if granted {
+                print("Notification permission granted")
+            } else {
+                print("Notification permission denied")
             }
         }
     }
@@ -74,7 +94,7 @@ class TimerService: ObservableObject {
     private func showTimerCompleteNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Checkpoint Timer Complete"
-        content.body = "Time to log your work!"
+        content.body = "Time to log your work! A new timer will start automatically."
         content.sound = .default
         
         let request = UNNotificationRequest(identifier: "timer-complete", content: content, trigger: nil)
@@ -82,6 +102,13 @@ class TimerService: ObservableObject {
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("Notification error: \(error)")
+                // Fallback: just post the notification for UI updates
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: .timerCompleted, object: nil)
+                }
+            } else {
+                // Post a notification that can be used to trigger UI updates
+                NotificationCenter.default.post(name: .timerCompleted, object: nil)
             }
         }
     }
