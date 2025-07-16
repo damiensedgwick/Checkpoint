@@ -30,12 +30,9 @@ struct TimerLabelView: View {
 struct checkpointApp: App {
     @StateObject private var dataManager = DataManager.shared
     @StateObject private var timerService = TimerService.shared
+    @StateObject private var windowService = WindowService.shared
     @Environment(\.openWindow) private var openWindow
     
-    init() {
-        setupNotificationHandling()
-    }
-
     var body: some Scene {
         // Menu bar controls
         MenuBarExtra {
@@ -52,6 +49,12 @@ struct checkpointApp: App {
         .windowResizability(.contentSize)
         .windowStyle(.titleBar)
         .defaultSize(width: 350, height: 280)
+        .onChange(of: windowService.shouldOpenLoggingWindow) { shouldOpen in
+            if shouldOpen {
+                openWindow(id: "logging")
+                windowService.shouldOpenLoggingWindow = false
+            }
+        }
 
         // Logs window
         WindowGroup(id: "log-reading") {
@@ -71,15 +74,4 @@ struct checkpointApp: App {
     }
 }
 
-// MARK: - Notification Handling
-extension checkpointApp {
-    private func setupNotificationHandling() {
-        NotificationCenter.default.addObserver(
-            forName: .openLoggingWindow,
-            object: nil,
-            queue: .main
-        ) { _ in
-            openWindow(id: "logging")
-        }
-    }
-}
+
