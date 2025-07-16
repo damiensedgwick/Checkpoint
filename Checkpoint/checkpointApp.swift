@@ -14,14 +14,15 @@ struct TimerLabelView: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "hourglass")
+                .frame(width: 50)
             if timerService.timeRemaining > 0 {
                 Text(timerService.formatTime(timerService.timeRemaining))
                     .font(.system(.caption, design: .monospaced))
                     .foregroundColor(timerService.timeRemaining < 300 ? .red : .primary)
-                    .frame(width: 45, alignment: .leading) // Fixed width for "00:00" format
+                    .frame(width: 50, alignment: .leading) // Fixed width for "00:00" format
             }
         }
-        .frame(width: 100)
+        .frame(width: 125)
     }
 }
 
@@ -29,6 +30,11 @@ struct TimerLabelView: View {
 struct checkpointApp: App {
     @StateObject private var dataManager = DataManager.shared
     @StateObject private var timerService = TimerService.shared
+    @Environment(\.openWindow) private var openWindow
+    
+    init() {
+        setupNotificationHandling()
+    }
 
     var body: some Scene {
         // Menu bar controls
@@ -62,5 +68,18 @@ struct checkpointApp: App {
         .windowResizability(.contentSize)
         .windowStyle(.titleBar)
         .defaultSize(width: 400, height: 500)
+    }
+}
+
+// MARK: - Notification Handling
+extension checkpointApp {
+    private func setupNotificationHandling() {
+        NotificationCenter.default.addObserver(
+            forName: .openLoggingWindow,
+            object: nil,
+            queue: .main
+        ) { _ in
+            openWindow(id: "logging")
+        }
     }
 }

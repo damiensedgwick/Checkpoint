@@ -4,6 +4,7 @@ import UserNotifications
 
 extension Notification.Name {
     static let timerCompleted = Notification.Name("timerCompleted")
+    static let openLoggingWindow = Notification.Name("openLoggingWindow")
 }
 
 @MainActor
@@ -71,6 +72,9 @@ class TimerService: ObservableObject {
             // Show notification
             showTimerCompleteNotification()
             
+            // Open logging window
+            openLoggingWindow()
+            
             // Restart timer after a brief delay to avoid race conditions
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 DataManager.shared.startTimer()
@@ -118,5 +122,11 @@ class TimerService: ObservableObject {
         let minutes = Int(timeInterval) / 60
         let seconds = Int(timeInterval) % 60
         return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    private func openLoggingWindow() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .openLoggingWindow, object: nil)
+        }
     }
 } 
