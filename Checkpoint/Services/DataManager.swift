@@ -17,8 +17,9 @@ class DataManager: ObservableObject {
     
     private init() {
         loadData()
-        // Auto-start timer if not already running
-        if !isTimerRunning {
+        // Only auto-start timer if we're not resuming from a previous session
+        // This prevents the timer from starting when the app is reopened after being closed
+        if !isTimerRunning && timerStartTime == nil {
             startTimer()
         }
     }
@@ -54,6 +55,12 @@ class DataManager: ObservableObject {
     func stopTimer() {
         isTimerRunning = false
         timerStartTime = nil
+        userDefaults.removeObject(forKey: timerStartTimeKey)
+    }
+    
+    func stopTimerAndClear() {
+        stopTimer()
+        // Also clear any persisted timer state to prevent resuming on next launch
         userDefaults.removeObject(forKey: timerStartTimeKey)
     }
     

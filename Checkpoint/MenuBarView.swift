@@ -69,6 +69,8 @@ struct MenuBarView: View {
         Divider()
 
         Button("Quit") {
+            // Stop the timer and clear persisted state before quitting
+            dataManager.stopTimerAndClear()
             NSApplication.shared.terminate(nil)
         }
     }

@@ -33,6 +33,17 @@ struct checkpointApp: App {
     @StateObject private var windowService = WindowService.shared
     @Environment(\.openWindow) private var openWindow
     
+    init() {
+        // Set up app termination handler to stop timer when app is closed
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.willTerminateNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            DataManager.shared.stopTimerAndClear()
+        }
+    }
+    
     var body: some Scene {
         // Menu bar controls
         MenuBarExtra {
