@@ -15,9 +15,7 @@ struct SettingsView: View {
         ("30 minutes", 30 * 60),
         ("45 minutes", 45 * 60),
         ("1 hour", 60 * 60),
-        ("2 hours", 120 * 60),
-        ("3 hours", 180 * 60),
-        ("4 hours", 240 * 60)
+        ("2 hours", 120 * 60)
     ]
     
     var body: some View {
