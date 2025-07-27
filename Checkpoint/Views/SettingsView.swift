@@ -22,144 +22,142 @@ struct SettingsView: View {
     ]
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 0) {
-                // Header
-                VStack(spacing: 8) {
-                    Image(systemName: "gear")
-                        .font(.system(size: 32))
-                        .foregroundColor(.accentColor)
-                    
-                    Text("Settings")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                }
-                .padding(.top, 20)
-                .padding(.bottom, 30)
+        VStack(spacing: 0) {
+            // Header
+            VStack(spacing: 8) {
+                Image(systemName: "gear")
+                    .font(.system(size: 32))
+                    .foregroundColor(.accentColor)
                 
-                // Settings Content
-                ScrollView {
-                    VStack(spacing: 24) {
-                        // Timer Settings
-                        SettingsSection(title: "Timer Settings") {
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("Default Interval")
-                                    .font(.headline)
-                                
-                                Picker("Default Interval", selection: Binding(
-                                    get: { dataManager.currentInterval },
-                                    set: { dataManager.updateInterval($0) }
-                                )) {
-                                    ForEach(intervals, id: \.1) { name, interval in
-                                        Text(name).tag(interval)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                
-                                Text("This interval will be used when starting a new timer")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                        
-                        // App Behavior
-                        SettingsSection(title: "App Behavior") {
-                            VStack(alignment: .leading, spacing: 16) {
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Auto-start on Login")
-                                            .font(.headline)
-                                        Text("Automatically start Checkpoint when you log in")
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    Toggle("", isOn: Binding(
-                                        get: { loginItemService.isAutoStartEnabled },
-                                        set: { _ in loginItemService.toggleAutoStart() }
-                                    ))
+                Text("Settings")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+            }
+            .padding(.top, 20)
+            .padding(.bottom, 30)
+            
+            // Settings Content
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Timer Settings
+                    SettingsSection(title: "Timer Settings") {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Default Interval")
+                                .font(.headline)
+                            
+                            Picker("Default Interval", selection: Binding(
+                                get: { dataManager.currentInterval },
+                                set: { dataManager.updateInterval($0) }
+                            )) {
+                                ForEach(intervals, id: \.1) { name, interval in
+                                    Text(name).tag(interval)
                                 }
                             }
+                            .pickerStyle(.menu)
+                            
+                            Text("This interval will be used when starting a new timer")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
-                        
-                        // Data Management
-                        SettingsSection(title: "Data Management") {
-                            VStack(alignment: .leading, spacing: 16) {
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Log Entries")
-                                            .font(.headline)
-                                        Text("\(dataManager.logEntries.count) entries stored")
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    Button("Export") {
-                                        if dataManager.logEntries.isEmpty {
-                                            exportAlertMessage = "No logs to export. Please create some log entries first."
-                                            showingExportAlert = true
-                                        } else {
-                                            showingExportSheet = true
-                                        }
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .disabled(dataManager.logEntries.isEmpty)
-                                }
-                                
-                                Divider()
-                                
-                                Button("Reset All Data") {
-                                    showingResetAlert = true
-                                }
-                                .buttonStyle(.borderedProminent)
-                                .tint(.red)
-                                .disabled(dataManager.logEntries.isEmpty)
-                            }
-                        }
-                        
-                        // About
-                        SettingsSection(title: "About") {
-                            VStack(alignment: .leading, spacing: 12) {
-                                HStack {
-                                    Text("Version")
+                    }
+                    
+                    // App Behavior
+                    SettingsSection(title: "App Behavior") {
+                        VStack(alignment: .leading, spacing: 16) {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Auto-start on Login")
                                         .font(.headline)
-                                    Spacer()
-                                    Text("1.0.0")
+                                    Text("Automatically start Checkpoint when you log in")
+                                        .font(.caption)
                                         .foregroundColor(.secondary)
                                 }
                                 
-                                HStack {
-                                    Text("Build")
-                                        .font(.headline)
-                                    Spacer()
-                                    Text("1")
-                                        .foregroundColor(.secondary)
-                                }
+                                Spacer()
                                 
-                                Text("Checkpoint helps you track your work sessions and maintain productivity.")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                    .padding(.top, 8)
+                                Toggle("", isOn: Binding(
+                                    get: { loginItemService.isAutoStartEnabled },
+                                    set: { _ in loginItemService.toggleAutoStart() }
+                                ))
                             }
                         }
                     }
-                    .padding(.horizontal, 24)
+                    
+                    // Data Management
+                    SettingsSection(title: "Data Management") {
+                        VStack(alignment: .leading, spacing: 16) {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Log Entries")
+                                        .font(.headline)
+                                    Text("\(dataManager.logEntries.count) entries stored")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                
+                                Spacer()
+                                
+                                Button("Export") {
+                                    if dataManager.logEntries.isEmpty {
+                                        exportAlertMessage = "No logs to export. Please create some log entries first."
+                                        showingExportAlert = true
+                                    } else {
+                                        showingExportSheet = true
+                                    }
+                                }
+                                .buttonStyle(.bordered)
+                                .disabled(dataManager.logEntries.isEmpty)
+                            }
+                            
+                            Divider()
+                            
+                            Button("Reset All Data") {
+                                showingResetAlert = true
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.red)
+                            .disabled(dataManager.logEntries.isEmpty)
+                        }
+                    }
+                    
+                    // About
+                    SettingsSection(title: "About") {
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Text("Version")
+                                    .font(.headline)
+                                Spacer()
+                                Text("1.0.0")
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            HStack {
+                                Text("Build")
+                                    .font(.headline)
+                                Spacer()
+                                Text("1")
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            Text("Checkpoint helps you track your work sessions and maintain productivity.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.top, 8)
+                        }
+                    }
                 }
-                
-                // Close Button
-                Button("Done") {
-                    dismiss()
-                }
-                .buttonStyle(.borderedProminent)
-                .padding(.bottom, 20)
+                .padding(.horizontal, 24)
             }
-            .frame(width: 400, height: 500)
-            .background(Color(.windowBackgroundColor))
+            
+            // Close Button
+            Button("Done") {
+                dismiss()
+            }
+            .buttonStyle(.borderedProminent)
+            .padding(.bottom, 20)
         }
+        .frame(width: 400, height: 500)
+        .background(Color(.windowBackgroundColor))
         .alert("Reset All Data", isPresented: $showingResetAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Reset", role: .destructive) {
