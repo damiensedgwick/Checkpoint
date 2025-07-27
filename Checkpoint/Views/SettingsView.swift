@@ -3,12 +3,15 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @StateObject private var dataManager = DataManager.shared
+    @StateObject private var loginItemService = LoginItemService.shared
     @Environment(\.dismiss) private var dismiss
     
     @State private var showingResetAlert = false
     @State private var showingExportSheet = false
     @State private var showingExportAlert = false
     @State private var exportAlertMessage = ""
+    @State private var showingAutoStartAlert = false
+    @State private var autoStartAlertMessage = ""
     
     private let intervals: [(String, TimeInterval)] = [
         ("15 minutes", 15 * 60),
@@ -56,6 +59,28 @@ struct SettingsView: View {
                                 Text("This interval will be used when starting a new timer")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
+                            }
+                        }
+                        
+                        // App Behavior
+                        SettingsSection(title: "App Behavior") {
+                            VStack(alignment: .leading, spacing: 16) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Auto-start on Login")
+                                            .font(.headline)
+                                        Text("Automatically start Checkpoint when you log in")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Toggle("", isOn: Binding(
+                                        get: { loginItemService.isAutoStartEnabled },
+                                        set: { _ in loginItemService.toggleAutoStart() }
+                                    ))
+                                }
                             }
                         }
                         
@@ -162,6 +187,16 @@ struct SettingsView: View {
             Button("OK") { }
         } message: {
             Text(exportAlertMessage)
+        }
+        .alert("Auto-start Error", isPresented: Binding(
+            get: { loginItemService.lastError != nil },
+            set: { if !$0 { loginItemService.lastError = nil } }
+        )) {
+            Button("OK") { loginItemService.lastError = nil }
+        } message: {
+            if let error = loginItemService.lastError {
+                Text(error)
+            }
         }
     }
 }
