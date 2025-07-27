@@ -7,6 +7,8 @@ struct SettingsView: View {
     
     @State private var showingResetAlert = false
     @State private var showingExportSheet = false
+    @State private var showingExportAlert = false
+    @State private var exportAlertMessage = ""
     
     private let intervals: [(String, TimeInterval)] = [
         ("15 minutes", 15 * 60),
@@ -74,9 +76,15 @@ struct SettingsView: View {
                                     Spacer()
                                     
                                     Button("Export") {
-                                        showingExportSheet = true
+                                        if dataManager.logEntries.isEmpty {
+                                            exportAlertMessage = "No logs to export. Please create some log entries first."
+                                            showingExportAlert = true
+                                        } else {
+                                            showingExportSheet = true
+                                        }
                                     }
                                     .buttonStyle(.bordered)
+                                    .disabled(dataManager.logEntries.isEmpty)
                                 }
                                 
                                 Divider()
@@ -142,7 +150,21 @@ struct SettingsView: View {
             document: LogExportDocument(logs: dataManager.logEntries),
             contentType: .json,
             defaultFilename: "checkpoint-logs-\(Date().formatted(.dateTime.year().month().day()))"
-        ) { _ in }
+        ) { result in
+            switch result {
+            case .success(let url):
+                exportAlertMessage = "Logs exported successfully to:\n\(url.lastPathComponent)"
+                showingExportAlert = true
+            case .failure(let error):
+                exportAlertMessage = "Failed to export logs: \(error.localizedDescription)"
+                showingExportAlert = true
+            }
+        }
+        .alert("Export Result", isPresented: $showingExportAlert) {
+            Button("OK") { }
+        } message: {
+            Text(exportAlertMessage)
+        }
     }
 }
 
@@ -184,7 +206,11 @@ struct LogExportDocument: FileDocument {
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = try JSONEncoder().encode(logs)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        encoder.dateEncodingStrategy = .iso8601
+        
+        let data = try encoder.encode(logs)
         return FileWrapper(regularFileWithContents: data)
     }
 }
