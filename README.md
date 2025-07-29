@@ -5,6 +5,8 @@ through logging your work at set intervals.
 
 ## Installation
 
+⚠️ Requires macOS Sequoia (15) or higher
+
 1. Download the latest [release](https://github.com/damiensedgwick/checkpoint/releases)
 2. Drag the Checkpoint app into your applications folder
 3. Open up Checkpoint and start tracking your work with ease!
