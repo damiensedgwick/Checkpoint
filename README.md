@@ -11,7 +11,7 @@ through logging your work at set intervals.
 2. Drag the Checkpoint app into your applications folder
 3. Open up Checkpoint and start tracking your work with ease!
 
-<img width="3024" height="1964" alt="471219621-ef3677de-3515-41c8-b8f1-1304a23fe9dd" src="https://github.com/user-attachments/assets/4bec5145-c341-40f6-9b87-c92b436cb004" />
+<img width="3024" height="1964" alt="Screenshot 2025-07-30 at 11 50 49" src="https://github.com/user-attachments/assets/f7d3642e-7d0f-425e-81f0-359286a6fe81" />
 
 ## License
 
