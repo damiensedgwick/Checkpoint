@@ -40,7 +40,9 @@ struct checkpointApp: App {
             object: nil,
             queue: .main
         ) { _ in
-            DataManager.shared.stopTimerAndClear()
+            Task { @MainActor in
+                DataManager.shared.stopTimerAndClear()
+            }
         }
     }
     
