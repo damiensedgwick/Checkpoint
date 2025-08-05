@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import AppKit
 
 @MainActor
 class WindowService: ObservableObject {
@@ -25,5 +26,18 @@ class WindowService: ObservableObject {
     
     func openLoggingWindow() {
         shouldOpenLoggingWindow = true
+    }
+    
+    func bringLoggingWindowToFront() {
+        // Activate the app to bring it to the front
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        
+        // Find the logging window and bring it to the front
+        if let window = NSApplication.shared.windows.first(where: { window in
+            window.identifier?.rawValue == "logging"
+        }) {
+            window.makeKeyAndOrderFront(nil)
+            window.orderFrontRegardless()
+        }
     }
 } 

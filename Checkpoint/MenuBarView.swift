@@ -11,19 +11,33 @@ struct MenuBarView: View {
     @Environment(\.openWindow) private var openWindow
     @StateObject private var dataManager = DataManager.shared
     @StateObject private var timerService = TimerService.shared
+    @StateObject private var windowService = WindowService.shared
     
-    let intervals: [TimeInterval] = [
-        15 * 60,  // 15 minutes
-        30 * 60,  // 30 minutes
-        45 * 60,  // 45 minutes
-        60 * 60,  // 60 minutes (1 hour)
-        120 * 60  // 120 minutes (2 hours)
-    ]
+    var intervals: [TimeInterval] {
+        var baseIntervals: [TimeInterval] = [
+            15 * 60,  // 15 minutes
+            30 * 60,  // 30 minutes
+            45 * 60,  // 45 minutes
+            60 * 60,  // 60 minutes (1 hour)
+            120 * 60  // 120 minutes (2 hours)
+        ]
+        
+        #if DEBUG
+        // Add 1-minute interval for testing only
+        baseIntervals.insert(60, at: 0)  // 1 minute
+        #endif
+        
+        return baseIntervals
+    }
 
     var body: some View {
         // Add a new log
         Button("Log work now") {
             openWindow(id: "logging")
+            // Bring the window to the front after a brief delay to ensure it's created
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                windowService.bringLoggingWindowToFront()
+            }
         }
 
         Divider()

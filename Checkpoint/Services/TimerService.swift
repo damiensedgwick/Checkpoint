@@ -85,34 +85,44 @@ class TimerService: ObservableObject {
     
     private func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
-            if let error = error {
-                print("Notification permission error: \(error)")
-            } else if granted {
-                print("Notification permission granted")
-            } else {
-                print("Notification permission denied")
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Notification permission error: \(error)")
+                } else if granted {
+                    print("Notification permission granted")
+                } else {
+                    print("Notification permission denied - notifications will be disabled")
+                }
             }
         }
     }
     
     private func showTimerCompleteNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "Checkpoint Timer Complete"
-        content.body = "Time to log your work! A new timer will start automatically."
-        content.sound = .default
-        
-        let request = UNNotificationRequest(identifier: "timer-complete", content: content, trigger: nil)
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Notification error: \(error)")
-                // Fallback: just post the notification for UI updates
-                DispatchQueue.main.async {
+        // Check notification settings first
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                if settings.authorizationStatus == .authorized {
+                    let content = UNMutableNotificationContent()
+                    content.title = "Checkpoint Timer Complete"
+                    content.body = "Time to log your work! A new timer will start automatically."
+                    content.sound = .default
+                    
+                    let request = UNNotificationRequest(identifier: "timer-complete", content: content, trigger: nil)
+                    
+                    UNUserNotificationCenter.current().add(request) { error in
+                        if let error = error {
+                            print("Notification error: \(error)")
+                        }
+                        // Always post the notification for UI updates regardless of notification success
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: .timerCompleted, object: nil)
+                        }
+                    }
+                } else {
+                    print("Notifications not authorized - skipping notification")
+                    // Still post the notification for UI updates
                     NotificationCenter.default.post(name: .timerCompleted, object: nil)
                 }
-            } else {
-                // Post a notification that can be used to trigger UI updates
-                NotificationCenter.default.post(name: .timerCompleted, object: nil)
             }
         }
     }

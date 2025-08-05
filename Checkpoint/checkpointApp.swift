@@ -63,6 +63,10 @@ struct checkpointApp: App {
         .onChange(of: windowService.shouldOpenLoggingWindow) { oldValue, shouldOpen in
             if shouldOpen {
                 openWindow(id: "logging")
+                // Bring the window to the front after a brief delay to ensure it's created
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    windowService.bringLoggingWindowToFront()
+                }
                 windowService.shouldOpenLoggingWindow = false
             }
         }

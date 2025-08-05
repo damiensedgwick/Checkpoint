@@ -39,25 +39,29 @@ struct SettingsView: View {
             // Settings Content
             ScrollView {
                 VStack(spacing: 24) {
-                    // Timer Settings
-                    SettingsSection(title: "Timer Settings") {
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("Default Interval")
-                                .font(.headline)
-                            
-                            Picker("Default Interval", selection: Binding(
-                                get: { dataManager.currentInterval },
-                                set: { dataManager.updateInterval($0) }
-                            )) {
-                                ForEach(intervals, id: \.1) { name, interval in
-                                    Text(name).tag(interval)
-                                }
+                    // About
+                    SettingsSection(title: "About") {
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Text("Version")
+                                    .font(.headline)
+                                Spacer()
+                                Text("1.0.0")
+                                    .foregroundColor(.secondary)
                             }
-                            .pickerStyle(.menu)
-                            
-                            Text("This interval will be used when starting a new timer")
+
+                            HStack {
+                                Text("Build")
+                                    .font(.headline)
+                                Spacer()
+                                Text("1")
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Text("Checkpoint helps you track your work sessions and maintain productivity.")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
+                                .padding(.top, 8)
                         }
                     }
                     
@@ -120,31 +124,7 @@ struct SettingsView: View {
                         }
                     }
                     
-                    // About
-                    SettingsSection(title: "About") {
-                        VStack(alignment: .leading, spacing: 12) {
-                            HStack {
-                                Text("Version")
-                                    .font(.headline)
-                                Spacer()
-                                Text("1.0.0")
-                                    .foregroundColor(.secondary)
-                            }
-                            
-                            HStack {
-                                Text("Build")
-                                    .font(.headline)
-                                Spacer()
-                                Text("1")
-                                    .foregroundColor(.secondary)
-                            }
-                            
-                            Text("Checkpoint helps you track your work sessions and maintain productivity.")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .padding(.top, 8)
-                        }
-                    }
+
                 }
                 .padding(.horizontal, 24)
             }
@@ -156,7 +136,7 @@ struct SettingsView: View {
             .buttonStyle(.borderedProminent)
             .padding(.bottom, 20)
         }
-        .frame(width: 400, height: 500)
+        .frame(width: 400, height: 650)
         .background(Color(.windowBackgroundColor))
         .alert("Reset All Data", isPresented: $showingResetAlert) {
             Button("Cancel", role: .cancel) { }

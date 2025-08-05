@@ -103,16 +103,20 @@ struct LoggingView: View {
         dismiss()
         
         // Show success notification
-        let content = UNMutableNotificationContent()
-        content.title = "Log Saved"
-        content.body = "Your work has been logged successfully"
-        content.sound = .default
-        
-        let request = UNNotificationRequest(identifier: "log-saved", content: content, trigger: nil)
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Notification error: \(error)")
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            if settings.authorizationStatus == .authorized {
+                let content = UNMutableNotificationContent()
+                content.title = "Log Saved"
+                content.body = "Your work has been logged successfully"
+                content.sound = .default
+                
+                let request = UNNotificationRequest(identifier: "log-saved", content: content, trigger: nil)
+                
+                UNUserNotificationCenter.current().add(request) { error in
+                    if let error = error {
+                        print("Notification error: \(error)")
+                    }
+                }
             }
         }
     }

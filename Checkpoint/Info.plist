@@ -4,7 +4,7 @@
 <dict>
 	<key>LSUIElement</key>
 	<true/>
-	<key>NSUserNotificationAlertStyle</key>
-	<string>alert</string>
+	<key>NSUserNotificationUsageDescription</key>
+	<string>This app uses notifications to remind you when it's time to log your work.</string>
 </dict>
 </plist>
