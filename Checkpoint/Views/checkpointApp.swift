@@ -8,17 +8,19 @@
 import SwiftUI
 
 struct TimerLabelView: View {
-    @StateObject private var dataManager = DataManager.shared
-    @StateObject private var timerService = TimerService.shared
+    @StateObject private var viewModel = TimerLabelViewModel(
+        dataManager: DataManager.shared,
+        timerService: TimerService.shared
+    )
     
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "hourglass")
                 .frame(width: 50)
-            if timerService.timeRemaining > 0 {
-                Text(timerService.formatTime(timerService.timeRemaining))
+            if viewModel.shouldShowTimer {
+                Text(viewModel.formattedTimeRemaining)
                     .font(.system(.caption, design: .monospaced))
-                    .foregroundColor(timerService.timeRemaining < 300 ? .red : .primary)
+                    .foregroundColor(viewModel.timerColor)
                     .frame(width: 50, alignment: .leading) // Fixed width for "00:00" format
             }
         }
@@ -90,5 +92,3 @@ struct checkpointApp: App {
         .defaultSize(width: 400, height: 500)
     }
 }
-
-

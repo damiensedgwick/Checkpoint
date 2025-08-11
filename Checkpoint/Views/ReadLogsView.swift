@@ -8,21 +8,9 @@
 import SwiftUI
 
 struct LogReadingView: View {
-    @StateObject private var dataManager = DataManager.shared
-    @State private var searchText = ""
-    @State private var showingDeleteAlert = false
-    @State private var entryToDelete: LogEntry?
-    
-    private var filteredEntries: [LogEntry] {
-        if searchText.isEmpty {
-            return dataManager.logEntries
-        } else {
-            return dataManager.logEntries.filter { entry in
-                entry.project.localizedCaseInsensitiveContains(searchText) ||
-                entry.description.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-    }
+    @StateObject private var viewModel = LogReadingViewModel(
+        dataManager: DataManager.shared
+    )
     
     var body: some View {
         VStack(spacing: 0) {
@@ -35,7 +23,7 @@ struct LogReadingView: View {
                     
                     Spacer()
                     
-                    Text("\(filteredEntries.count) entries")
+                    Text("\(viewModel.filteredEntries.count) entries")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.horizontal, 12)
@@ -49,7 +37,7 @@ struct LogReadingView: View {
                     Image(systemName: "magnifyingglass")
                         .foregroundColor(.secondary)
                     
-                    TextField("Search logs...", text: $searchText)
+                    TextField("Search logs...", text: $viewModel.searchText)
                         .textFieldStyle(.plain)
                 }
                 .padding(.horizontal, 12)
@@ -63,17 +51,17 @@ struct LogReadingView: View {
             .background(Color(.windowBackgroundColor))
             
             // Content
-            if filteredEntries.isEmpty {
+            if !viewModel.hasFilteredResults {
                 VStack(spacing: 16) {
                     Image(systemName: "doc.text.magnifyingglass")
                         .font(.system(size: 48))
                         .foregroundColor(.secondary)
                     
-                    Text(dataManager.logEntries.isEmpty ? "No logs yet" : "No matching logs")
+                    Text(viewModel.hasEntries ? "No matching logs" : "No logs yet")
                         .font(.headline)
                         .foregroundColor(.secondary)
                     
-                    if dataManager.logEntries.isEmpty {
+                    if !viewModel.hasEntries {
                         Text("Start by logging your first work session")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
@@ -85,7 +73,7 @@ struct LogReadingView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                Table(filteredEntries) {
+                Table(viewModel.filteredEntries) {
                     TableColumn("Date") { entry in
                         Text(entry.formattedDate)
                             .font(.system(.body, design: .monospaced))
@@ -115,12 +103,9 @@ struct LogReadingView: View {
                     }
                     .width(min: 300)
                     
-
-                    
                     TableColumn("Actions") { entry in
                         Button(action: {
-                            entryToDelete = entry
-                            showingDeleteAlert = true
+                            viewModel.deleteEntry(entry)
                         }) {
                             Image(systemName: "trash")
                                 .foregroundColor(.red)
@@ -134,13 +119,10 @@ struct LogReadingView: View {
         }
         .frame(minWidth: 700, minHeight: 400)
         .background(Color(.windowBackgroundColor))
-        .alert("Delete Log", isPresented: $showingDeleteAlert) {
+        .alert("Delete Log", isPresented: $viewModel.showingDeleteAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Delete", role: .destructive) {
-                if let entry = entryToDelete {
-                    dataManager.deleteLogEntry(entry)
-                    entryToDelete = nil
-                }
+                viewModel.confirmDelete()
             }
         } message: {
             Text("Are you sure you want to delete this log entry?")

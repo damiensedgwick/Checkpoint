@@ -10,13 +10,9 @@ import UserNotifications
 
 struct LoggingView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.openWindow) private var openWindow
-    @StateObject private var dataManager = DataManager.shared
-    
-    @State private var project = ""
-    @State private var description = ""
-    @State private var showingAlert = false
-    @State private var alertMessage = ""
+    @StateObject private var viewModel = LoggingViewModel(
+        dataManager: DataManager.shared
+    )
     
     var body: some View {
         VStack(spacing: 20) {
@@ -33,7 +29,7 @@ struct LoggingView: View {
                     Text("Project")
                         .font(.headline)
                     
-                    TextField("Enter project name", text: $project)
+                    TextField("Enter project name", text: $viewModel.project)
                         .textFieldStyle(.roundedBorder)
                 }
                 
@@ -42,7 +38,7 @@ struct LoggingView: View {
                     Text("Description")
                         .font(.headline)
                     
-                    TextEditor(text: $description)
+                    TextEditor(text: $viewModel.description)
                         .frame(height: 60)
                         .padding(8)
                         .background(Color(.textBackgroundColor))
@@ -60,70 +56,36 @@ struct LoggingView: View {
             // Action Buttons
             HStack(spacing: 12) {
                 Button("Cancel") {
+                    viewModel.resetState()
                     dismiss()
                 }
                 .buttonStyle(.bordered)
                 
                 Button("Save") {
-                    saveLog()
+                    if viewModel.saveLog() {
+                        viewModel.clearForm()
+                        dismiss()
+                    }
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(project.isEmpty || description.isEmpty)
+                .disabled(!viewModel.isFormValid)
             }
             .padding(.bottom, 20)
         }
         .frame(width: 350, height: 280)
         .background(Color(.windowBackgroundColor))
-        .alert("Error", isPresented: $showingAlert) {
+        .alert("Error", isPresented: $viewModel.showingAlert) {
             Button("OK") { }
         } message: {
-            Text(alertMessage)
+            Text(viewModel.alertMessage)
         }
-    }
-    
-    private func saveLog() {
-        guard !project.isEmpty else {
-            alertMessage = "Please enter a project name"
-            showingAlert = true
-            return
-        }
-        
-        guard !description.isEmpty else {
-            alertMessage = "Please enter a description"
-            showingAlert = true
-            return
-        }
-        
-        let entry = LogEntry(
-            project: project.trimmingCharacters(in: .whitespacesAndNewlines),
-            description: description.trimmingCharacters(in: .whitespacesAndNewlines)
-        )
-        
-        dataManager.saveLogEntry(entry)
-        dismiss()
-        
-        // Show success notification
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            if settings.authorizationStatus == .authorized {
-                let content = UNMutableNotificationContent()
-                content.title = "Log Saved"
-                content.body = "Your work has been logged successfully"
-                content.sound = .default
-                
-                let request = UNNotificationRequest(identifier: "log-saved", content: content, trigger: nil)
-                
-                UNUserNotificationCenter.current().add(request) { error in
-                    if let error = error {
-                        print("Notification error: \(error)")
-                    }
-                }
-            }
+        .onDisappear {
+            viewModel.resetState()
         }
     }
 }
-
-
 
 #Preview {
     LoggingView()
 }
+

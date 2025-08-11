@@ -2,24 +2,11 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct SettingsView: View {
-    @StateObject private var dataManager = DataManager.shared
-    @StateObject private var loginItemService = LoginItemService.shared
+    @StateObject private var viewModel = SettingsViewModel(
+        dataManager: DataManager.shared,
+        loginItemService: LoginItemService.shared
+    )
     @Environment(\.dismiss) private var dismiss
-    
-    @State private var showingResetAlert = false
-    @State private var showingExportSheet = false
-    @State private var showingExportAlert = false
-    @State private var exportAlertMessage = ""
-    @State private var showingAutoStartAlert = false
-    @State private var autoStartAlertMessage = ""
-    
-    private let intervals: [(String, TimeInterval)] = [
-        ("15 minutes", 15 * 60),
-        ("30 minutes", 30 * 60),
-        ("45 minutes", 45 * 60),
-        ("1 hour", 60 * 60),
-        ("2 hours", 120 * 60)
-    ]
     
     var body: some View {
         VStack(spacing: 0) {
@@ -80,8 +67,8 @@ struct SettingsView: View {
                                 Spacer()
                                 
                                 Toggle("", isOn: Binding(
-                                    get: { loginItemService.isAutoStartEnabled },
-                                    set: { _ in loginItemService.toggleAutoStart() }
+                                    get: { viewModel.isAutoStartEnabled },
+                                    set: { _ in viewModel.toggleAutoStart() }
                                 ))
                             }
                         }
@@ -94,7 +81,7 @@ struct SettingsView: View {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text("Log Entries")
                                         .font(.headline)
-                                    Text("\(dataManager.logEntries.count) entries stored")
+                                    Text("\(viewModel.logCount) entries stored")
                                         .font(.caption)
                                         .foregroundColor(.secondary)
                                 }
@@ -102,29 +89,22 @@ struct SettingsView: View {
                                 Spacer()
                                 
                                 Button("Export") {
-                                    if dataManager.logEntries.isEmpty {
-                                        exportAlertMessage = "No logs to export. Please create some log entries first."
-                                        showingExportAlert = true
-                                    } else {
-                                        showingExportSheet = true
-                                    }
+                                    viewModel.exportLogs()
                                 }
                                 .buttonStyle(.bordered)
-                                .disabled(dataManager.logEntries.isEmpty)
+                                .disabled(!viewModel.hasLogs)
                             }
                             
                             Divider()
                             
                             Button("Reset All Data") {
-                                showingResetAlert = true
+                                viewModel.resetAllData()
                             }
                             .buttonStyle(.borderedProminent)
                             .tint(.red)
-                            .disabled(dataManager.logEntries.isEmpty)
+                            .disabled(!viewModel.hasLogs)
                         }
                     }
-                    
-
                 }
                 .padding(.horizontal, 24)
             }
@@ -138,41 +118,41 @@ struct SettingsView: View {
         }
         .frame(width: 400, height: 650)
         .background(Color(.windowBackgroundColor))
-        .alert("Reset All Data", isPresented: $showingResetAlert) {
+        .alert("Reset All Data", isPresented: $viewModel.showingResetAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Reset", role: .destructive) {
-                dataManager.clearAllLogs()
+                viewModel.confirmReset()
             }
         } message: {
             Text("This will permanently delete all your log entries. This action cannot be undone.")
         }
         .fileExporter(
-            isPresented: $showingExportSheet,
-            document: LogExportDocument(logs: dataManager.logEntries),
+            isPresented: $viewModel.showingExportSheet,
+            document: LogExportDocument(logs: viewModel.logEntries),
             contentType: .json,
             defaultFilename: "checkpoint-logs-\(Date().formatted(.dateTime.year().month().day()))"
         ) { result in
             switch result {
             case .success(let url):
-                exportAlertMessage = "Logs exported successfully to:\n\(url.lastPathComponent)"
-                showingExportAlert = true
+                viewModel.exportAlertMessage = "Logs exported successfully to:\n\(url.lastPathComponent)"
+                viewModel.showingExportAlert = true
             case .failure(let error):
-                exportAlertMessage = "Failed to export logs: \(error.localizedDescription)"
-                showingExportAlert = true
+                viewModel.exportAlertMessage = "Failed to export logs: \(error.localizedDescription)"
+                viewModel.showingExportAlert = true
             }
         }
-        .alert("Export Result", isPresented: $showingExportAlert) {
+        .alert("Export Result", isPresented: $viewModel.showingExportAlert) {
             Button("OK") { }
         } message: {
-            Text(exportAlertMessage)
+            Text(viewModel.exportAlertMessage)
         }
         .alert("Auto-start Error", isPresented: Binding(
-            get: { loginItemService.lastError != nil },
-            set: { if !$0 { loginItemService.lastError = nil } }
+            get: { viewModel.hasError },
+            set: { if !$0 { viewModel.clearError() } }
         )) {
-            Button("OK") { loginItemService.lastError = nil }
+            Button("OK") { viewModel.clearError() }
         } message: {
-            if let error = loginItemService.lastError {
+            if let error = viewModel.lastError {
                 Text(error)
             }
         }

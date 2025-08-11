@@ -28,5 +28,8 @@ extension LogEntry {
         return formatter.string(from: date)
     }
     
-
+    var timeRemaining: TimeInterval {
+        // This will be calculated by the ViewModel
+        return 0
+    }
 } 
