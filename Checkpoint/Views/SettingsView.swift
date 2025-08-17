@@ -33,7 +33,7 @@ struct SettingsView: View {
                                 Text("Version")
                                     .font(.headline)
                                 Spacer()
-                                Text("1.0.0")
+                                Text("1.1.0")
                                     .foregroundColor(.secondary)
                             }
 
