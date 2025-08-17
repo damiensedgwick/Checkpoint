@@ -31,6 +31,7 @@ struct MenuBarView: View {
             Button("Start Timer") {
                 viewModel.toggleTimer()
             }
+            .disabled(viewModel.isLoggingWindowOpen)
         }
 
         Divider()

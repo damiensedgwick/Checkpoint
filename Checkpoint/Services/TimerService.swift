@@ -60,6 +60,11 @@ class TimerService: ObservableObject {
     }
     
     private func updateTimeRemaining() {
+        // Don't update if timer is paused
+        if DataManager.shared.isTimerPaused {
+            return
+        }
+        
         timeRemaining = DataManager.shared.remainingTime
         
         if DataManager.shared.isTimerComplete && !isRestarting {
@@ -75,11 +80,9 @@ class TimerService: ObservableObject {
             // Open logging window
             openLoggingWindow()
             
-            // Restart timer after a brief delay to avoid race conditions
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                DataManager.shared.startTimer()
-                self.isRestarting = false
-            }
+            // Don't restart timer automatically - it will be paused when logging window opens
+            // Timer will resume when logging window closes
+            self.isRestarting = false
         }
     }
     

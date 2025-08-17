@@ -13,6 +13,7 @@ struct LoggingView: View {
     @StateObject private var viewModel = LoggingViewModel(
         dataManager: DataManager.shared
     )
+    @StateObject private var windowService = WindowService.shared
     
     var body: some View {
         VStack(spacing: 20) {
@@ -57,6 +58,7 @@ struct LoggingView: View {
             HStack(spacing: 12) {
                 Button("Cancel") {
                     viewModel.resetState()
+                    windowService.notifyLoggingWindowClosed()
                     dismiss()
                 }
                 .buttonStyle(.bordered)
@@ -64,6 +66,7 @@ struct LoggingView: View {
                 Button("Save") {
                     if viewModel.saveLog() {
                         viewModel.clearForm()
+                        windowService.notifyLoggingWindowClosed()
                         dismiss()
                     }
                 }

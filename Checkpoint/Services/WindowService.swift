@@ -2,11 +2,17 @@ import Foundation
 import SwiftUI
 import AppKit
 
+extension Notification.Name {
+    static let loggingWindowOpened = Notification.Name("loggingWindowOpened")
+    static let loggingWindowClosed = Notification.Name("loggingWindowClosed")
+}
+
 @MainActor
 class WindowService: ObservableObject {
     static let shared = WindowService()
     
     @Published var shouldOpenLoggingWindow = false
+    @Published var isLoggingWindowOpen = false
     
     private init() {
         setupNotificationHandling()
@@ -26,7 +32,7 @@ class WindowService: ObservableObject {
     
     func openLoggingWindow() {
         // Check if a logging window is already open
-        if isLoggingWindowOpen() {
+        if checkIfLoggingWindowIsOpen() {
             // If window exists, just bring it to front
             bringLoggingWindowToFront()
         } else {
@@ -35,7 +41,7 @@ class WindowService: ObservableObject {
         }
     }
     
-    func isLoggingWindowOpen() -> Bool {
+    func checkIfLoggingWindowIsOpen() -> Bool {
         return NSApplication.shared.windows.contains { window in
             window.identifier?.rawValue == "logging"
         }
@@ -52,5 +58,15 @@ class WindowService: ObservableObject {
             window.makeKeyAndOrderFront(nil)
             window.orderFrontRegardless()
         }
+    }
+    
+    func notifyLoggingWindowOpened() {
+        isLoggingWindowOpen = true
+        NotificationCenter.default.post(name: .loggingWindowOpened, object: nil)
+    }
+    
+    func notifyLoggingWindowClosed() {
+        isLoggingWindowOpen = false
+        NotificationCenter.default.post(name: .loggingWindowClosed, object: nil)
     }
 } 

@@ -7,6 +7,7 @@ class MenuBarViewModel: ObservableObject {
     // MARK: - Published Properties
     @Published var isTimerRunning = false
     @Published var currentInterval: TimeInterval = 30 * 60
+    @Published var isLoggingWindowOpen = false
     
     // MARK: - Services
     private let dataManager: DataManager
@@ -51,10 +52,19 @@ class MenuBarViewModel: ObservableObject {
         dataManager.$currentInterval
             .assign(to: \.currentInterval, on: self)
             .store(in: &cancellables)
+        
+        windowService.$isLoggingWindowOpen
+            .assign(to: \.isLoggingWindowOpen, on: self)
+            .store(in: &cancellables)
     }
     
     // MARK: - Public Methods
     func toggleTimer() {
+        // Don't allow starting timer if logging window is open
+        if isLoggingWindowOpen && !isTimerRunning {
+            return
+        }
+        
         if isTimerRunning {
             dataManager.stopTimer()
         } else {

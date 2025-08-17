@@ -7,6 +7,7 @@ class TimerLabelViewModel: ObservableObject {
     // MARK: - Published Properties
     @Published var timeRemaining: TimeInterval = 0
     @Published var isTimerRunning = false
+    @Published var isTimerPaused = false
     
     // MARK: - Services
     private let dataManager: DataManager
@@ -33,6 +34,10 @@ class TimerLabelViewModel: ObservableObject {
         dataManager.$isTimerRunning
             .assign(to: \.isTimerRunning, on: self)
             .store(in: &cancellables)
+        
+        dataManager.$isTimerPaused
+            .assign(to: \.isTimerPaused, on: self)
+            .store(in: &cancellables)
     }
     
     // MARK: - Public Methods
@@ -46,10 +51,17 @@ class TimerLabelViewModel: ObservableObject {
     }
     
     var timerColor: Color {
-        return timeRemaining < 300 ? .red : .primary
+        if isTimerPaused {
+            return .secondary // Show paused timer in secondary color
+        } else if timeRemaining < 300 {
+            return .red
+        } else {
+            return .primary
+        }
     }
     
     var formattedTimeRemaining: String {
-        return formatTime(timeRemaining)
+        let timeString = formatTime(timeRemaining)
+        return isTimerPaused ? "⏸ \(timeString)" : timeString
     }
 }

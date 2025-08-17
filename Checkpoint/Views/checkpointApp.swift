@@ -67,11 +67,13 @@ struct checkpointApp: App {
         .onChange(of: windowService.shouldOpenLoggingWindow) { oldValue, shouldOpen in
             if shouldOpen {
                 // Only open a new window if one doesn't already exist
-                if !windowService.isLoggingWindowOpen() {
+                if !windowService.checkIfLoggingWindowIsOpen() {
                     openWindow(id: "logging")
                     // Bring the window to the front after a brief delay to ensure it's created
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         windowService.bringLoggingWindowToFront()
+                        // Notify that the logging window has opened
+                        windowService.notifyLoggingWindowOpened()
                     }
                 }
                 windowService.shouldOpenLoggingWindow = false
