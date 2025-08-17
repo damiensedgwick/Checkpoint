@@ -13,6 +13,13 @@ through logging your work at set intervals.
 
 <img width="3024" height="1964" alt="Screenshot 2025-07-30 at 11 50 49" src="https://github.com/user-attachments/assets/f7d3642e-7d0f-425e-81f0-359286a6fe81" />
 
+## Release Process
+
+1. Archive the project from within Xcode
+2. Distrubute App > Direct Distribution
+3. Once processed, export Notarized app
+4. Create new release on GitHub and upload binary
+
 ## License
 
 This project is open source and available under the MIT License.
