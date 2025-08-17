@@ -62,6 +62,6 @@ class TimerLabelViewModel: ObservableObject {
     
     var formattedTimeRemaining: String {
         let timeString = formatTime(timeRemaining)
-        return isTimerPaused ? "Paused: \(timeString)" : timeString
+        return isTimerPaused ? "\(timeString) (Paused)" : timeString
     }
 }
