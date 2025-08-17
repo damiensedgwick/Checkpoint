@@ -66,10 +66,13 @@ struct checkpointApp: App {
         .defaultSize(width: 350, height: 280)
         .onChange(of: windowService.shouldOpenLoggingWindow) { oldValue, shouldOpen in
             if shouldOpen {
-                openWindow(id: "logging")
-                // Bring the window to the front after a brief delay to ensure it's created
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    windowService.bringLoggingWindowToFront()
+                // Only open a new window if one doesn't already exist
+                if !windowService.isLoggingWindowOpen() {
+                    openWindow(id: "logging")
+                    // Bring the window to the front after a brief delay to ensure it's created
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        windowService.bringLoggingWindowToFront()
+                    }
                 }
                 windowService.shouldOpenLoggingWindow = false
             }
@@ -92,3 +95,4 @@ struct checkpointApp: App {
         .defaultSize(width: 400, height: 500)
     }
 }
+

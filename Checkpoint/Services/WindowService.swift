@@ -25,7 +25,20 @@ class WindowService: ObservableObject {
     }
     
     func openLoggingWindow() {
-        shouldOpenLoggingWindow = true
+        // Check if a logging window is already open
+        if isLoggingWindowOpen() {
+            // If window exists, just bring it to front
+            bringLoggingWindowToFront()
+        } else {
+            // Only set flag to open new window if none exists
+            shouldOpenLoggingWindow = true
+        }
+    }
+    
+    func isLoggingWindowOpen() -> Bool {
+        return NSApplication.shared.windows.contains { window in
+            window.identifier?.rawValue == "logging"
+        }
     }
     
     func bringLoggingWindowToFront() {
