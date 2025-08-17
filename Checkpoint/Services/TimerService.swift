@@ -5,6 +5,8 @@ import UserNotifications
 extension Notification.Name {
     static let timerCompleted = Notification.Name("timerCompleted")
     static let openLoggingWindow = Notification.Name("openLoggingWindow")
+    static let timerPaused = Notification.Name("timerPaused")
+    static let timerResumed = Notification.Name("timerResumed")
 }
 
 @MainActor
@@ -20,6 +22,7 @@ class TimerService: ObservableObject {
     
     private init() {
         setupBindings()
+        setupNotificationHandling()
         requestNotificationPermission()
     }
     
@@ -42,13 +45,59 @@ class TimerService: ObservableObject {
             .store(in: &cancellables)
     }
     
-    private func startTimer() {
-        stopTimer()
-        updateTimeRemaining()
-        
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+    private func setupNotificationHandling() {
+        NotificationCenter.default.addObserver(
+            forName: .loggingWindowOpened,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
             Task { @MainActor in
-                self?.updateTimeRemaining()
+                self?.pauseTimer()
+            }
+        }
+        
+        NotificationCenter.default.addObserver(
+            forName: .loggingWindowClosed,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.resumeTimer()
+            }
+        }
+        
+        NotificationCenter.default.addObserver(
+            forName: .timerPaused,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.pauseTimer()
+            }
+        }
+        
+        NotificationCenter.default.addObserver(
+            forName: .timerResumed,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.resumeTimer()
+            }
+        }
+    }
+    
+    private func startTimer() {
+        // Only stop the timer object, don't reset timeRemaining
+        timer?.invalidate()
+        timer = nil
+        
+        // Only start the timer if not paused
+        if !DataManager.shared.isTimerPaused {
+            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+                Task { @MainActor in
+                    self?.updateTimeRemaining()
+                }
             }
         }
     }
@@ -57,6 +106,27 @@ class TimerService: ObservableObject {
         timer?.invalidate()
         timer = nil
         timeRemaining = 0
+    }
+    
+    private func pauseTimer() {
+        // Stop the timer object to prevent background counting
+        timer?.invalidate()
+        timer = nil
+        // Keep timeRemaining as is - don't reset it
+        // The DataManager.pausedTimeRemaining will store the current remaining time
+    }
+    
+    private func resumeTimer() {
+        // Restart the timer if it should be running and not paused
+        if DataManager.shared.isTimerRunning && !DataManager.shared.isTimerPaused {
+            // Don't call updateTimeRemaining() here - it would recalculate from DataManager
+            // and potentially cause time jumping. Just restart the timer object.
+            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+                Task { @MainActor in
+                    self?.updateTimeRemaining()
+                }
+            }
+        }
     }
     
     private func updateTimeRemaining() {

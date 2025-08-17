@@ -11,6 +11,8 @@ class DataManager: ObservableObject {
     @Published var timerStartTime: Date?
     @Published var isTimerPaused = false
     @Published var pausedTimeRemaining: TimeInterval = 0
+    @Published var pauseStartTime: Date?
+    @Published var totalPauseDuration: TimeInterval = 0
     
     private let userDefaults = UserDefaults.standard
     private let logEntriesKey = "checkpoint_log_entries"
@@ -21,11 +23,6 @@ class DataManager: ObservableObject {
     private init() {
         loadData()
         setupNotificationHandling()
-        // Only auto-start timer if we're not resuming from a previous session
-        // This prevents the timer from starting when the app is reopened after being closed
-        if !isTimerRunning && timerStartTime == nil {
-            startTimer()
-        }
     }
     
     private func setupNotificationHandling() {
@@ -73,16 +70,14 @@ class DataManager: ObservableObject {
         userDefaults.set(interval, forKey: currentIntervalKey)
     }
     
-    // MARK: - Timer Management
+    // MARK: - Public Methods
     func startTimer() {
-        // Don't start timer if logging window is open
-        if WindowService.shared.isLoggingWindowOpen {
-            return
-        }
+        guard !isTimerRunning else { return }
         
         isTimerRunning = true
         isTimerPaused = false
         timerStartTime = Date()
+        totalPauseDuration = 0
         userDefaults.set(timerStartTime?.timeIntervalSince1970, forKey: timerStartTimeKey)
     }
     
@@ -91,6 +86,8 @@ class DataManager: ObservableObject {
         isTimerPaused = false
         timerStartTime = nil
         pausedTimeRemaining = 0
+        pauseStartTime = nil
+        totalPauseDuration = 0
         userDefaults.removeObject(forKey: timerStartTimeKey)
     }
     
@@ -105,20 +102,25 @@ class DataManager: ObservableObject {
         
         isTimerPaused = true
         pausedTimeRemaining = remainingTime
+        pauseStartTime = Date()
         // Keep the timer start time so we can calculate the pause duration
+        
+        // Notify that timer was paused
+        NotificationCenter.default.post(name: .timerPaused, object: nil)
     }
     
     func resumeTimer() {
         guard isTimerPaused else { return }
         
         isTimerPaused = false
-        // Adjust the start time to account for the pause duration
-        if timerStartTime != nil {
-            let pauseDuration = currentInterval - pausedTimeRemaining
-            timerStartTime = Date().addingTimeInterval(-pauseDuration)
-            userDefaults.set(timerStartTime?.timeIntervalSince1970, forKey: timerStartTimeKey)
+        // Add the current pause duration to the total
+        if let pauseStart = pauseStartTime {
+            totalPauseDuration += Date().timeIntervalSince(pauseStart)
         }
-        pausedTimeRemaining = 0
+        pauseStartTime = nil
+        
+        // Notify that timer was resumed
+        NotificationCenter.default.post(name: .timerResumed, object: nil)
     }
     
     func startNewTimerAfterLogging() {
@@ -132,9 +134,12 @@ class DataManager: ObservableObject {
         guard let startTime = timerStartTime else { return 0 }
         
         if isTimerPaused {
+            // If currently paused, return the time that had elapsed before pause
             return currentInterval - pausedTimeRemaining
         } else {
-            return Date().timeIntervalSince(startTime)
+            // Calculate total elapsed time minus total pause duration
+            let totalElapsed = Date().timeIntervalSince(startTime)
+            return totalElapsed - totalPauseDuration
         }
     }
     

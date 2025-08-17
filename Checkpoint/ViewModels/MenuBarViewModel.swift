@@ -8,6 +8,7 @@ class MenuBarViewModel: ObservableObject {
     @Published var isTimerRunning = false
     @Published var currentInterval: TimeInterval = 30 * 60
     @Published var isLoggingWindowOpen = false
+    @Published var isTimerPaused = false
     
     // MARK: - Services
     private let dataManager: DataManager
@@ -56,6 +57,10 @@ class MenuBarViewModel: ObservableObject {
         windowService.$isLoggingWindowOpen
             .assign(to: \.isLoggingWindowOpen, on: self)
             .store(in: &cancellables)
+        
+        dataManager.$isTimerPaused
+            .assign(to: \.isTimerPaused, on: self)
+            .store(in: &cancellables)
     }
     
     // MARK: - Public Methods
@@ -69,6 +74,14 @@ class MenuBarViewModel: ObservableObject {
             dataManager.stopTimer()
         } else {
             dataManager.startTimer()
+        }
+    }
+    
+    func togglePauseTimer() {
+        if isTimerPaused {
+            dataManager.resumeTimer()
+        } else {
+            dataManager.pauseTimer()
         }
     }
     

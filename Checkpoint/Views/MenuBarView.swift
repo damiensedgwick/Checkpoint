@@ -27,6 +27,12 @@ struct MenuBarView: View {
             Button("Stop Timer") {
                 viewModel.toggleTimer()
             }
+            
+            if !viewModel.isLoggingWindowOpen {
+                Button(viewModel.isTimerPaused ? "Resume Timer" : "Pause Timer") {
+                    viewModel.togglePauseTimer()
+                }
+            }
         } else {
             Button("Start Timer") {
                 viewModel.toggleTimer()
