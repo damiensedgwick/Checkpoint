@@ -10,8 +10,10 @@ import SwiftUI
 @main
 struct checkpointApp: App {
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        WindowGroup("Checkpoint") {
+            LogWorkView()
         }
+        .windowStyle(.hiddenTitleBar)
+        .windowResizability(.contentSize)
     }
 }
