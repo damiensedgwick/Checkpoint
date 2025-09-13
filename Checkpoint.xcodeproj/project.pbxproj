@@ -6,33 +6,63 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		6266EE432E76032C0018A51F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6266EE2D2E76032C0018A51F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6266EE342E76032C0018A51F;
+			remoteInfo = checkpoint;
+		};
+		6266EE4D2E76032C0018A51F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6266EE2D2E76032C0018A51F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6266EE342E76032C0018A51F;
+			remoteInfo = checkpoint;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		62CD36E62E19BA5000846360 /* checkpoint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = checkpoint.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6266EE352E76032C0018A51F /* checkpoint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = checkpoint.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6266EE422E76032C0018A51F /* checkpointTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = checkpointTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6266EE4C2E76032C0018A51F /* checkpointUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = checkpointUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		622A51222E19BE8400E46F84 /* Exceptions for "checkpoint" folder in "checkpoint" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 62CD36E52E19BA5000846360 /* checkpoint */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		62CD36E82E19BA5000846360 /* checkpoint */ = {
+		6266EE372E76032C0018A51F /* checkpoint */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				622A51222E19BE8400E46F84 /* Exceptions for "checkpoint" folder in "checkpoint" target */,
-			);
 			path = checkpoint;
+			sourceTree = "<group>";
+		};
+		6266EE452E76032C0018A51F /* checkpointTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = checkpointTests;
+			sourceTree = "<group>";
+		};
+		6266EE4F2E76032C0018A51F /* checkpointUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = checkpointUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		62CD36E32E19BA5000846360 /* Frameworks */ = {
+		6266EE322E76032C0018A51F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6266EE3F2E76032C0018A51F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6266EE492E76032C0018A51F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -42,18 +72,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		62CD36DD2E19BA5000846360 = {
+		6266EE2C2E76032C0018A51F = {
 			isa = PBXGroup;
 			children = (
-				62CD36E82E19BA5000846360 /* checkpoint */,
-				62CD36E72E19BA5000846360 /* Products */,
+				6266EE372E76032C0018A51F /* checkpoint */,
+				6266EE452E76032C0018A51F /* checkpointTests */,
+				6266EE4F2E76032C0018A51F /* checkpointUITests */,
+				6266EE362E76032C0018A51F /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		62CD36E72E19BA5000846360 /* Products */ = {
+		6266EE362E76032C0018A51F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				62CD36E62E19BA5000846360 /* checkpoint.app */,
+				6266EE352E76032C0018A51F /* checkpoint.app */,
+				6266EE422E76032C0018A51F /* checkpointTests.xctest */,
+				6266EE4C2E76032C0018A51F /* checkpointUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -61,64 +95,134 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		62CD36E52E19BA5000846360 /* checkpoint */ = {
+		6266EE342E76032C0018A51F /* checkpoint */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 62CD36F22E19BA5100846360 /* Build configuration list for PBXNativeTarget "checkpoint" */;
+			buildConfigurationList = 6266EE562E76032D0018A51F /* Build configuration list for PBXNativeTarget "checkpoint" */;
 			buildPhases = (
-				62CD36E22E19BA5000846360 /* Sources */,
-				62CD36E32E19BA5000846360 /* Frameworks */,
-				62CD36E42E19BA5000846360 /* Resources */,
+				6266EE312E76032C0018A51F /* Sources */,
+				6266EE322E76032C0018A51F /* Frameworks */,
+				6266EE332E76032C0018A51F /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				62CD36E82E19BA5000846360 /* checkpoint */,
+				6266EE372E76032C0018A51F /* checkpoint */,
 			);
 			name = checkpoint;
 			packageProductDependencies = (
 			);
 			productName = checkpoint;
-			productReference = 62CD36E62E19BA5000846360 /* checkpoint.app */;
+			productReference = 6266EE352E76032C0018A51F /* checkpoint.app */;
 			productType = "com.apple.product-type.application";
+		};
+		6266EE412E76032C0018A51F /* checkpointTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6266EE592E76032D0018A51F /* Build configuration list for PBXNativeTarget "checkpointTests" */;
+			buildPhases = (
+				6266EE3E2E76032C0018A51F /* Sources */,
+				6266EE3F2E76032C0018A51F /* Frameworks */,
+				6266EE402E76032C0018A51F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6266EE442E76032C0018A51F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				6266EE452E76032C0018A51F /* checkpointTests */,
+			);
+			name = checkpointTests;
+			packageProductDependencies = (
+			);
+			productName = checkpointTests;
+			productReference = 6266EE422E76032C0018A51F /* checkpointTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		6266EE4B2E76032C0018A51F /* checkpointUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6266EE5C2E76032D0018A51F /* Build configuration list for PBXNativeTarget "checkpointUITests" */;
+			buildPhases = (
+				6266EE482E76032C0018A51F /* Sources */,
+				6266EE492E76032C0018A51F /* Frameworks */,
+				6266EE4A2E76032C0018A51F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6266EE4E2E76032C0018A51F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				6266EE4F2E76032C0018A51F /* checkpointUITests */,
+			);
+			name = checkpointUITests;
+			packageProductDependencies = (
+			);
+			productName = checkpointUITests;
+			productReference = 6266EE4C2E76032C0018A51F /* checkpointUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		62CD36DE2E19BA5000846360 /* Project object */ = {
+		6266EE2D2E76032C0018A51F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 1640;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
-					62CD36E52E19BA5000846360 = {
-						CreatedOnToolsVersion = 16.4;
+					6266EE342E76032C0018A51F = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					6266EE412E76032C0018A51F = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 6266EE342E76032C0018A51F;
+					};
+					6266EE4B2E76032C0018A51F = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 6266EE342E76032C0018A51F;
 					};
 				};
 			};
-			buildConfigurationList = 62CD36E12E19BA5000846360 /* Build configuration list for PBXProject "checkpoint" */;
+			buildConfigurationList = 6266EE302E76032C0018A51F /* Build configuration list for PBXProject "checkpoint" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 62CD36DD2E19BA5000846360;
+			mainGroup = 6266EE2C2E76032C0018A51F;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 62CD36E72E19BA5000846360 /* Products */;
+			productRefGroup = 6266EE362E76032C0018A51F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				62CD36E52E19BA5000846360 /* checkpoint */,
+				6266EE342E76032C0018A51F /* checkpoint */,
+				6266EE412E76032C0018A51F /* checkpointTests */,
+				6266EE4B2E76032C0018A51F /* checkpointUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		62CD36E42E19BA5000846360 /* Resources */ = {
+		6266EE332E76032C0018A51F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6266EE402E76032C0018A51F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6266EE4A2E76032C0018A51F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -128,7 +232,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		62CD36E22E19BA5000846360 /* Sources */ = {
+		6266EE312E76032C0018A51F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6266EE3E2E76032C0018A51F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6266EE482E76032C0018A51F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -137,8 +255,21 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		6266EE442E76032C0018A51F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6266EE342E76032C0018A51F /* checkpoint */;
+			targetProxy = 6266EE432E76032C0018A51F /* PBXContainerItemProxy */;
+		};
+		6266EE4E2E76032C0018A51F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6266EE342E76032C0018A51F /* checkpoint */;
+			targetProxy = 6266EE4D2E76032C0018A51F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
-		62CD36F02E19BA5100846360 /* Debug */ = {
+		6266EE542E76032D0018A51F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -192,7 +323,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -202,7 +333,7 @@
 			};
 			name = Debug;
 		};
-		62CD36F12E19BA5100846360 /* Release */ = {
+		6266EE552E76032D0018A51F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -250,7 +381,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -258,88 +389,190 @@
 			};
 			name = Release;
 		};
-		62CD36F32E19BA5100846360 /* Debug */ = {
+		6266EE572E76032D0018A51F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = checkpoint/checkpoint.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9PY38T7Q7U;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = checkpoint/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Checkpoint;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.damiensedgwick.checkpoint;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		62CD36F42E19BA5100846360 /* Release */ = {
+		6266EE582E76032D0018A51F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = checkpoint/checkpoint.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9PY38T7Q7U;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = checkpoint/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Checkpoint;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.damiensedgwick.checkpoint;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		6266EE5A2E76032D0018A51F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9PY38T7Q7U;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.damiensedgwick.checkpointTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/checkpoint.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/checkpoint";
+			};
+			name = Debug;
+		};
+		6266EE5B2E76032D0018A51F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9PY38T7Q7U;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.damiensedgwick.checkpointTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/checkpoint.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/checkpoint";
+			};
+			name = Release;
+		};
+		6266EE5D2E76032D0018A51F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9PY38T7Q7U;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.damiensedgwick.checkpointUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = checkpoint;
+			};
+			name = Debug;
+		};
+		6266EE5E2E76032D0018A51F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9PY38T7Q7U;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.damiensedgwick.checkpointUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = checkpoint;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		62CD36E12E19BA5000846360 /* Build configuration list for PBXProject "checkpoint" */ = {
+		6266EE302E76032C0018A51F /* Build configuration list for PBXProject "checkpoint" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				62CD36F02E19BA5100846360 /* Debug */,
-				62CD36F12E19BA5100846360 /* Release */,
+				6266EE542E76032D0018A51F /* Debug */,
+				6266EE552E76032D0018A51F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		62CD36F22E19BA5100846360 /* Build configuration list for PBXNativeTarget "checkpoint" */ = {
+		6266EE562E76032D0018A51F /* Build configuration list for PBXNativeTarget "checkpoint" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				62CD36F32E19BA5100846360 /* Debug */,
-				62CD36F42E19BA5100846360 /* Release */,
+				6266EE572E76032D0018A51F /* Debug */,
+				6266EE582E76032D0018A51F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6266EE592E76032D0018A51F /* Build configuration list for PBXNativeTarget "checkpointTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6266EE5A2E76032D0018A51F /* Debug */,
+				6266EE5B2E76032D0018A51F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6266EE5C2E76032D0018A51F /* Build configuration list for PBXNativeTarget "checkpointUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6266EE5D2E76032D0018A51F /* Debug */,
+				6266EE5E2E76032D0018A51F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 62CD36DE2E19BA5000846360 /* Project object */;
+	rootObject = 6266EE2D2E76032C0018A51F /* Project object */;
 }
