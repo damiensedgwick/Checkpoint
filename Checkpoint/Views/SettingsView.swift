@@ -44,10 +44,10 @@ struct SettingsView: View {
                                 .foregroundColor(.secondary)
                         }
 
-                        Text("Checkpoint helps you track your work sessions and maintain productivity.")
+                        Text("Checkpoint helps you track your work sessions with ease, stay in the zone, and maintain consistent productivity throughout your day.")
+                            .lineLimit(3...5)
                             .font(.caption)
                             .foregroundColor(.secondary)
-                            .padding(.top, 8)
                     }
                 }
 
@@ -78,9 +78,9 @@ struct SettingsView: View {
                     VStack(alignment: .leading, spacing: 16) {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Log Entries")
+                                Text("Your logs")
                                     .font(.headline)
-                                Text("\(viewModel.logCount) entries stored")
+                                Text("\(viewModel.logCount) logs stored")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -125,7 +125,7 @@ struct SettingsView: View {
                 viewModel.confirmReset()
             }
         } message: {
-            Text("This will permanently delete all your log entries. This action cannot be undone.")
+            Text("This will permanently delete all your logs. This action cannot be undone.")
         }
         .fileExporter(
             isPresented: $viewModel.showingExportSheet,
