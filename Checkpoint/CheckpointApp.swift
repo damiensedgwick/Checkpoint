@@ -10,8 +10,8 @@ import SwiftUI
 @main
 struct CheckpointApp: App {
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        MenuBarExtra("Checkpoint", systemImage: "hourglass") {
+            AppMenuView()
         }
     }
 }
