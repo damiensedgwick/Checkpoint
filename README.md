@@ -1,11 +1,16 @@
 # Checkpoint
 
-A quick and dirty macOS app built using Swift and SwiftUI that helps you track your work and maintain productivity
-through logging your work at set intervals.
+
+A quick and dirty macOS app built using Swift and SwiftUI that helps you
+track your work and maintain productivity through logging your work at
+set intervals.
+
+🙃 Version 2 is currently being developed to support macOS 26 and liquid
+glass. Because we are cowboys, this is being done in main, from scratch!
 
 ## Installation
 
-⚠️ Requires macOS Sequoia (15) or higher
+⚠️  Requires macOS Sequoia (15) or higher
 
 1. Download the latest [release](https://github.com/damiensedgwick/checkpoint/releases)
 2. Drag the Checkpoint app into your applications folder
