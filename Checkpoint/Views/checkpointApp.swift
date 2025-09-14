@@ -62,7 +62,7 @@ struct checkpointApp: App {
             LoggingView()
         }
         .windowResizability(.contentSize)
-        .windowStyle(.titleBar)
+        .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 350, height: 280)
         .onChange(of: windowService.shouldOpenLoggingWindow) { oldValue, shouldOpen in
             if shouldOpen {
@@ -85,7 +85,7 @@ struct checkpointApp: App {
             LogReadingView()
         }
         .windowResizability(.contentSize)
-        .windowStyle(.titleBar)
+        .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 700, height: 400)
         
         // Settings window
@@ -93,7 +93,7 @@ struct checkpointApp: App {
             SettingsView()
         }
         .windowResizability(.contentSize)
-        .windowStyle(.titleBar)
+        .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 400, height: 500)
     }
 }

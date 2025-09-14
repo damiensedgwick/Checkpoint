@@ -13,25 +13,21 @@ struct LogReadingView: View {
     )
     
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 8) {
             // Header with search and filters
-            VStack(spacing: 16) {
-                HStack {
+            VStack(spacing: 8) {
+                VStack(spacing: 4) {
+                    Image(systemName: "list.bullet.clipboard")
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.blue, .primary)
+                        .font(.largeTitle)
+
                     Text("Work Logs")
-                        .font(.title)
-                        .fontWeight(.bold)
-                    
-                    Spacer()
-                    
-                    Text("\(viewModel.filteredEntries.count) entries")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 4)
-                        .background(Color(.controlBackgroundColor))
-                        .cornerRadius(8)
+                        .font(.title2)
+                        .fontWeight(.semibold)
                 }
-                
+                .padding()
+
                 // Search bar
                 HStack {
                     Image(systemName: "magnifyingglass")
@@ -39,15 +35,23 @@ struct LogReadingView: View {
                     
                     TextField("Search logs...", text: $viewModel.searchText)
                         .textFieldStyle(.plain)
+
+                    Spacer()
+
+                    Text("\(viewModel.filteredEntries.count) logs")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 4)
+                        .background(Color(.controlBackgroundColor))
+                        .cornerRadius(8)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .background(Color(.controlBackgroundColor))
                 .cornerRadius(8)
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
-            .padding(.bottom, 16)
+            .padding()
             .background(Color(.windowBackgroundColor))
             
             // Content
@@ -117,7 +121,7 @@ struct LogReadingView: View {
                 .tableStyle(.inset(alternatesRowBackgrounds: true))
             }
         }
-        .frame(minWidth: 700, minHeight: 400)
+        .frame(minWidth: 800, minHeight: 600)
         .background(Color(.windowBackgroundColor))
         .alert("Delete Log", isPresented: $viewModel.showingDeleteAlert) {
             Button("Cancel", role: .cancel) { }

@@ -16,26 +16,42 @@ struct LoggingView: View {
     @StateObject private var windowService = WindowService.shared
     
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 16) {
             // Header
-            Text("Log Work")
-                .font(.title2)
-                .fontWeight(.semibold)
-                .padding(.top, 20)
-            
+            VStack(spacing: 4) {
+                Image(systemName: "pencil.line")
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.primary, .blue)
+                    .font(.largeTitle)
+
+                Text("Log Work")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+            }
+            .padding()
+
             // Form
             VStack(spacing: 16) {
                 // Project
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text("Project")
                         .font(.headline)
                     
                     TextField("Enter project name", text: $viewModel.project)
                         .textFieldStyle(.roundedBorder)
                 }
-                
+
+                // Title
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Title")
+                        .font(.headline)
+
+                    TextField("Enter project name", text: $viewModel.project)
+                        .textFieldStyle(.roundedBorder)
+                }
+
                 // Description
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text("Description")
                         .font(.headline)
                     
@@ -50,8 +66,8 @@ struct LoggingView: View {
                         )
                 }
             }
-            .padding(.horizontal, 20)
-            
+            .padding()
+
             Spacer()
             
             // Action Buttons
@@ -61,8 +77,8 @@ struct LoggingView: View {
                     windowService.notifyLoggingWindowClosed()
                     dismiss()
                 }
-                .buttonStyle(.bordered)
-                
+                .buttonStyle(.borderless)
+
                 Button("Save") {
                     if viewModel.saveLog() {
                         viewModel.clearForm()
@@ -73,9 +89,9 @@ struct LoggingView: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(!viewModel.isFormValid)
             }
-            .padding(.bottom, 20)
+            .padding()
         }
-        .frame(width: 350, height: 280)
+        .frame(width: 350, height: 450)
         .background(Color(.windowBackgroundColor))
         .alert("Error", isPresented: $viewModel.showingAlert) {
             Button("OK") { }
