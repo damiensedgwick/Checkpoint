@@ -64,6 +64,14 @@ struct AppMenuView: View {
         Button(action: {
             // TODO:
         }) {
+            Label("About Checkpoint", systemImage: "info.circle")
+        }
+
+        Divider()
+
+        Button(action: {
+            // TODO:
+        }) {
             Label("Add Log", systemImage: "plus")
         }
 
