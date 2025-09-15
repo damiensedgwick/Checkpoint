@@ -18,9 +18,13 @@ class AppMenuViewModel: ObservableObject {
 
     private let dataManager: DataManaging
 
-    init(dataManager: DataManaging = DataManager()) {
+    init(dataManager: DataManaging) {
         self.dataManager = dataManager
         self.selectedIntervalId = dataManager.loadSelectedIntervalId()
+    }
+
+    convenience init() {
+        self.init(dataManager: DataManager())
     }
 
     func selectInterval(withID id: String) {
