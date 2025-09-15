@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct AppMenuView: View {
-    @StateObject private var viewModel: AppMenuViewModel
-
-    init(dataManager: DataManager) {
-        _viewModel = StateObject(wrappedValue: AppMenuViewModel(dataManager: dataManager))
-    }
+    @ObservedObject var viewModel: AppMenuViewModel
 
     var body: some View {
         Button(action: {
@@ -94,5 +90,5 @@ struct AppMenuView: View {
 }
 
 #Preview {
-    AppMenuView(dataManager: DataManager())
+    AppMenuView(viewModel: AppMenuViewModel())
 }

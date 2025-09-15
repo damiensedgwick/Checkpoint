@@ -9,11 +9,11 @@ import SwiftUI
 
 @main
 struct CheckpointApp: App {
-    private let dataManager = DataManager()
+    @StateObject private var viewModel = AppMenuViewModel()
 
     var body: some Scene {
         MenuBarExtra("Checkpoint", systemImage: "hourglass") {
-            AppMenuView(dataManager: dataManager)
+            AppMenuView(viewModel: viewModel)
         }
     }
 }

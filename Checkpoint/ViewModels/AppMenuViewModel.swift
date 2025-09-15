@@ -7,7 +7,6 @@
 
 import Combine
 import Foundation
-import SwiftUI
 
 @MainActor
 class AppMenuViewModel: ObservableObject {
@@ -17,9 +16,9 @@ class AppMenuViewModel: ObservableObject {
         dataManager.availableIntervals
     }
 
-    private let dataManager: DataManager
+    private let dataManager: DataManaging
 
-    init(dataManager: DataManager) {
+    init(dataManager: DataManaging = DataManager()) {
         self.dataManager = dataManager
         self.selectedIntervalId = dataManager.loadSelectedIntervalId()
     }
