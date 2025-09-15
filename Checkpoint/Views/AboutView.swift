@@ -27,7 +27,7 @@ struct AboutView: View {
 
             VStack {
 
-                VStack {
+                VStack(spacing: 4) {
                     Text("Checkpoint")
                         .font(.body)
                         .fontWeight(.bold)
