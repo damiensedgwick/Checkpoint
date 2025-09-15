@@ -12,7 +12,7 @@ and liquid glass, hopefully this should be done soon!
 
 ## macOS Sequoia (15)
 
-1. Download the last release to support this version [v1.1.0]([https://github.com/damiensedgwick/checkpoint/releases](https://github.com/damiensedgwick/Checkpoint/releases/tag/v1.1.0)
+1. Download the last release to support this version [v1.1.0](https://github.com/damiensedgwick/Checkpoint/releases/tag/v1.1.0)
 2. Drag the Checkpoint app into your applications folder
 3. Open up Checkpoint and start logging your work
 
