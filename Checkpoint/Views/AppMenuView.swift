@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AppMenuView: View {
     @ObservedObject var viewModel: AppMenuViewModel
+    @ObservedObject var timerViewModel: CountdownTimerViewModel
 
     var body: some View {
         Button(action: {
@@ -34,19 +35,21 @@ struct AppMenuView: View {
         Divider()
 
         Button(action: {
-            // TODO:
+            timerViewModel.start()
         }) {
             Label("Start Timer", systemImage: "play.fill")
         }
+        .disabled(timerViewModel.isRunning)
 
         Button(action: {
-            // TODO:
+            timerViewModel.pause()
         }) {
             Label("Pause Timer", systemImage: "pause.fill")
         }
+        .disabled(!timerViewModel.isRunning)
 
         Button(action: {
-            // TODO:
+            timerViewModel.stop()
         }) {
             Label("Stop Timer", systemImage: "stop.fill")
         }
@@ -57,6 +60,7 @@ struct AppMenuView: View {
             ForEach(viewModel.intervals, id: \.id) { interval in
                 Button(action: {
                     viewModel.selectInterval(withID: interval.id)
+                    timerViewModel.reset(to: interval.duration)
                 }) {
                     HStack {
                         Text(interval.label)
@@ -82,7 +86,7 @@ struct AppMenuView: View {
         Divider()
 
         Button(action: {
-            // TODO:
+            NSApplication.shared.terminate(nil)
         }) {
             Label("Quit Checkpoint", systemImage: "xmark.circle")
         }
@@ -90,5 +94,8 @@ struct AppMenuView: View {
 }
 
 #Preview {
-    AppMenuView(viewModel: AppMenuViewModel())
+    AppMenuView(
+        viewModel: AppMenuViewModel(),
+        timerViewModel: CountdownTimerViewModel()
+    )
 }

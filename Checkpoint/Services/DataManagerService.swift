@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DataManager: DataManaging {
+class DataManagerService: DataManagingProtocol {
     private let userDefaults = UserDefaults.standard
     private let intervalKey = "checkpoint_interval"
 

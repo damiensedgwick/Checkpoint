@@ -16,15 +16,15 @@ class AppMenuViewModel: ObservableObject {
         dataManager.availableIntervals
     }
 
-    private let dataManager: DataManaging
+    private let dataManager: DataManagingProtocol
 
-    init(dataManager: DataManaging) {
+    init(dataManager: DataManagingProtocol) {
         self.dataManager = dataManager
         self.selectedIntervalId = dataManager.loadSelectedIntervalId()
     }
 
     convenience init() {
-        self.init(dataManager: DataManager())
+        self.init(dataManager: DataManagerService())
     }
 
     func selectInterval(withID id: String) {

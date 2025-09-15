@@ -9,11 +9,29 @@ import SwiftUI
 
 @main
 struct CheckpointApp: App {
-    @StateObject private var viewModel = AppMenuViewModel()
+    @StateObject private var appViewModel: AppMenuViewModel
+    @StateObject private var countdownTimerViewModel: CountdownTimerViewModel
+
+    init() {
+        let service = CountdownTimerService()
+        let menuViewModel = AppMenuViewModel()
+
+        if let defaultInterval = menuViewModel.intervals.first(where: { $0.id == menuViewModel.selectedIntervalId }) {
+            service.reset(to: defaultInterval.duration)
+        }
+
+        _appViewModel = StateObject(wrappedValue: menuViewModel)
+        _countdownTimerViewModel = StateObject(wrappedValue: CountdownTimerViewModel(countdownTimerService: service))
+    }
 
     var body: some Scene {
-        MenuBarExtra("Checkpoint", systemImage: "hourglass") {
-            AppMenuView(viewModel: viewModel)
+        MenuBarExtra {
+            AppMenuView(
+                viewModel: appViewModel,
+                timerViewModel: countdownTimerViewModel
+            )
+        } label: {
+            CountdownTimerView(viewModel: countdownTimerViewModel)
         }
     }
 }

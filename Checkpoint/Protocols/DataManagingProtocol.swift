@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol DataManaging {
+protocol DataManagingProtocol {
     var availableIntervals: [Interval] { get }
     var defaultIntervalId: String { get }
 
