@@ -27,6 +27,10 @@ class AppMenuViewModel: ObservableObject {
         self.init(dataManager: DataManagerService())
     }
 
+    func showAboutWindow() {
+        AboutWindowController.shared.showWindow()
+    }
+
     func selectInterval(withID id: String) {
         guard dataManager.interval(withId: id) != nil else { return }
 

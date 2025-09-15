@@ -12,83 +12,85 @@ struct AppMenuView: View {
     @ObservedObject var timerViewModel: CountdownTimerViewModel
 
     var body: some View {
-        Button(action: {
-            // TODO:
-        }) {
-            Label("About Checkpoint", systemImage: "info.circle")
-        }
+        VStack {
+            Button(action: {
+                viewModel.showAboutWindow()
+            }) {
+                Label("About Checkpoint", systemImage: "info.circle")
+            }
 
-        Divider()
+            Divider()
 
-        Button(action: {
-            // TODO:
-        }) {
-            Label("Add Log", systemImage: "plus")
-        }
+            Button(action: {
+                // TODO:
+            }) {
+                Label("Add Log", systemImage: "plus")
+            }
 
-        Button(action: {
-            // TODO:
-        }) {
-            Label("View Logs", systemImage: "list.dash")
-        }
+            Button(action: {
+                // TODO:
+            }) {
+                Label("View Logs", systemImage: "list.dash")
+            }
 
-        Divider()
+            Divider()
 
-        Button(action: {
-            timerViewModel.start()
-        }) {
-            Label("Start Timer", systemImage: "play.fill")
-        }
-        .disabled(timerViewModel.isRunning)
+            Button(action: {
+                timerViewModel.start()
+            }) {
+                Label("Start Timer", systemImage: "play.fill")
+            }
+            .disabled(timerViewModel.isRunning)
 
-        Button(action: {
-            timerViewModel.pause()
-        }) {
-            Label("Pause Timer", systemImage: "pause.fill")
-        }
-        .disabled(!timerViewModel.isRunning)
+            Button(action: {
+                timerViewModel.pause()
+            }) {
+                Label("Pause Timer", systemImage: "pause.fill")
+            }
+            .disabled(!timerViewModel.isRunning)
 
-        Button(action: {
-            timerViewModel.stop()
-        }) {
-            Label("Stop Timer", systemImage: "stop.fill")
-        }
+            Button(action: {
+                timerViewModel.stop()
+            }) {
+                Label("Stop Timer", systemImage: "stop.fill")
+            }
 
-        Divider()
+            Divider()
 
-        Menu {
-            ForEach(viewModel.intervals, id: \.id) { interval in
-                Button(action: {
-                    viewModel.selectInterval(withID: interval.id)
-                    timerViewModel.reset(to: interval.duration)
-                }) {
-                    HStack {
-                        Text(interval.label)
-                        Spacer()
-                        if viewModel.isIntervalSelected(interval) {
-                            Image(systemName: "checkmark")
+            Menu {
+                ForEach(viewModel.intervals, id: \.id) { interval in
+                    Button(action: {
+                        viewModel.selectInterval(withID: interval.id)
+                        timerViewModel.reset(to: interval.duration)
+                    }) {
+                        HStack {
+                            Text(interval.label)
+                            Spacer()
+                            if viewModel.isIntervalSelected(interval) {
+                                Image(systemName: "checkmark")
+                            }
                         }
                     }
                 }
+            } label: {
+                Label("Change Interval", systemImage: "clock")
             }
-        } label: {
-            Label("Change Interval", systemImage: "clock")
-        }
 
-        Divider()
+            Divider()
 
-        Button(action: {
-            // TODO:
-        }) {
-            Label("Settings", systemImage: "gear")
-        }
+            Button(action: {
+                // TODO:
+            }) {
+                Label("Settings", systemImage: "gear")
+            }
 
-        Divider()
+            Divider()
 
-        Button(action: {
-            NSApplication.shared.terminate(nil)
-        }) {
-            Label("Quit Checkpoint", systemImage: "xmark.circle")
+            Button(action: {
+                NSApplication.shared.terminate(nil)
+            }) {
+                Label("Quit Checkpoint", systemImage: "xmark.circle")
+            }
         }
     }
 }
