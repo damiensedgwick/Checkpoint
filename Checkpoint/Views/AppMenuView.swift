@@ -14,7 +14,7 @@ struct AppMenuView: View {
     var body: some View {
         VStack {
             Button(action: {
-                viewModel.showAboutWindow()
+                // TODO:
             }) {
                 Label("About Checkpoint", systemImage: "info.circle")
             }
