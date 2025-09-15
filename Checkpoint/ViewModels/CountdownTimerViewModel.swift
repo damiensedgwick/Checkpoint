@@ -26,14 +26,12 @@ class CountdownTimerViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        if let service = countdownTimerService as? CountdownTimerService {
-            service.$isRunning
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] isRunning in
-                    self?.isRunning = isRunning
-                }
-                .store(in: &cancellables)
-        }
+        countdownTimerService.isRunningPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] running in
+                self?.isRunning = running
+            }
+            .store(in: &cancellables)
     }
 
     convenience init() {

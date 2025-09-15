@@ -12,6 +12,7 @@ protocol CountdownTimerProtocol: AnyObject {
     var timeRemaining: Duration { get }
     var timeRemainingPublisher: AnyPublisher<Duration, Never> { get }
     var isRunning: Bool { get }
+    var isRunningPublisher: AnyPublisher<Bool, Never> { get }
 
     func start()
     func pause()
