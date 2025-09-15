@@ -8,57 +8,11 @@
 import SwiftUI
 
 struct AppMenuView: View {
+    @StateObject private var viewModel: AppMenuViewModel
 
-    // TODO: Do these want to be extracted to a view model?
-    @State private var intervals: [Interval] = {
-        var baseIntervals = [
-            Interval(
-                id: "15min",
-                label: "15 Minutes",
-                duration: .seconds(900),
-                isSelected: false
-            ),
-            Interval(
-                id: "30min",
-                label: "30 Minutes",
-                duration: .seconds(1800),
-                isSelected: true
-            ),
-            Interval(
-                id: "45min",
-                label: "45 Minutes",
-                duration: .seconds(2700),
-                isSelected: false
-            ),
-            Interval(
-                id: "60min",
-                label: "60 Minutes",
-                duration: .seconds(3600),
-                isSelected: false
-            ),
-            Interval(
-                id: "90min",
-                label: "90 Minutes",
-                duration: .seconds(5400),
-                isSelected: false
-            ),
-        ]
-
-        #if DEBUG
-        baseIntervals
-            .insert(
-                Interval(
-                    id: "1min",
-                    label: "1 Minute",
-                    duration: .seconds(60),
-                    isSelected: false
-                ),
-                at: 0
-            )
-        #endif // DEBUG
-
-        return baseIntervals
-    }()
+    init(dataManager: DataManager) {
+        _viewModel = StateObject(wrappedValue: AppMenuViewModel(dataManager: dataManager))
+    }
 
     var body: some View {
         Button(action: {
@@ -104,9 +58,9 @@ struct AppMenuView: View {
         Divider()
 
         Menu {
-            ForEach(intervals, id: \.id) { interval in
+            ForEach(viewModel.intervals, id: \.id) { interval in
                 Button(action: {
-                    selectInterval(withID: interval.id)
+                    viewModel.selectInterval(withID: interval.id)
                     #if DEBUG
                     print("Selected interval: \(interval.label)")
                     #endif // DEBUG
@@ -140,14 +94,8 @@ struct AppMenuView: View {
             Label("Quit Checkpoint", systemImage: "xmark.circle")
         }
     }
-
-    private func selectInterval(withID id: String) {
-        for index in intervals.indices {
-            intervals[index].isSelected = (intervals[index].id == id)
-        }
-    }
 }
 
 #Preview {
-    AppMenuView()
+    AppMenuView(dataManager: DataManager())
 }

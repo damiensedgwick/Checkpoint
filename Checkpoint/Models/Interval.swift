@@ -1,5 +1,5 @@
 //
-//  Durations.swift
+//  Interval.swift
 //  Checkpoint
 //
 //  Created by Damien Sedgwick on 14/09/2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Interval: Identifiable {
+struct Interval: Identifiable, Codable {
     var id: String
     var label: String
     var duration: Duration
