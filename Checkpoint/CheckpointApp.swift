@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct CheckpointApp: App {
-    @StateObject private var dataManager = DataManager()
+    private let dataManager = DataManager()
 
     var body: some Scene {
         MenuBarExtra("Checkpoint", systemImage: "hourglass") {

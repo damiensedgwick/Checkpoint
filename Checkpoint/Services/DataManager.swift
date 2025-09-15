@@ -1,69 +1,47 @@
 //
-//  Interval.swift
+//  DataManager.swift
 //  Checkpoint
 //
 //  Created by Damien Sedgwick on 14/09/2025.
 //
 
-import Combine
 import Foundation
 
-@MainActor
-class DataManager: ObservableObject {
-
-    @Published var interval: Interval
-
+class DataManager {
     private let userDefaults = UserDefaults.standard
     private let intervalKey = "checkpoint_interval"
 
-    init() {
-        // TODO: ADD COMMENT
-        self.interval = Interval(
-            id: "30min",
-            label: "30 minutes",
-            duration: .seconds(1800),
-            isSelected: true
-        )
-
-        // TODO: ADD COMMENT
-        load()
+    var availableIntervals: [Interval] {
+        IntervalConfiguration.allIntervals
     }
 
-    private func load() {
-        if let savedIntervalId = userDefaults.string(forKey: intervalKey) {
-            if let loadedInterval = getIntervalById(savedIntervalId) {
-                self.interval = loadedInterval
-                #if DEBUG
-                print("Loaded interval: \(interval.label)")
-                #endif
-                return
-            }
+    var defaultIntervalId: String {
+        IntervalConfiguration.defaultIntervalId
+    }
+
+    func loadSelectedIntervalId() -> String {
+        if let savedIntervalId = userDefaults.string(forKey: intervalKey),
+           availableIntervals.contains(where: { $0.id == savedIntervalId }) {
+            #if DEBUG
+            print("Loaded interval ID: \(savedIntervalId)")
+            #endif
+            return savedIntervalId
         }
+
         #if DEBUG
-        print("No saved interval found, using default: \(interval.label)")
+        print("No saved interval found, using default: \(defaultIntervalId)")
+        #endif
+        return defaultIntervalId
+    }
+
+    func saveSelectedIntervalId(_ intervalId: String) {
+        userDefaults.set(intervalId, forKey: intervalKey)
+        #if DEBUG
+        print("Saved interval ID: \(intervalId)")
         #endif
     }
 
-    private func getIntervalById(_ id: String) -> Interval? {
-        let intervals = [
-            Interval(id: "15min", label: "15 minutes", duration: .seconds(900), isSelected: false),
-            Interval(id: "30min", label: "30 minutes", duration: .seconds(1800), isSelected: false),
-            Interval(id: "45min", label: "45 minutes", duration: .seconds(2700), isSelected: false),
-            Interval(id: "60min", label: "60 minutes", duration: .seconds(3600), isSelected: false),
-            Interval(id: "90min", label: "90 minutes", duration: .seconds(5400), isSelected: false)
-        ]
-
-        #if DEBUG
-        let debugInterval = Interval(id: "1min", label: "1 minute", duration: .seconds(60), isSelected: false)
-        return intervals.first(where: { $0.id == id }) ?? (id == "1min" ? debugInterval : nil)
-        #endif
-    }
-
-    func setInterval(_ interval: Interval) {
-        self.interval = interval
-        userDefaults.set(interval.id, forKey: intervalKey)
-        #if DEBUG
-        print("Saved interval: \(interval.label)")
-        #endif
+    func interval(withId id: String) -> Interval? {
+        availableIntervals.first { $0.id == id }
     }
 }

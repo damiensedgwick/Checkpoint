@@ -8,8 +8,7 @@
 import Foundation
 
 struct Interval: Identifiable, Codable {
-    var id: String
-    var label: String
-    var duration: Duration
-    var isSelected: Bool
+    let id: String
+    let label: String
+    let duration: Duration
 }

@@ -61,14 +61,11 @@ struct AppMenuView: View {
             ForEach(viewModel.intervals, id: \.id) { interval in
                 Button(action: {
                     viewModel.selectInterval(withID: interval.id)
-                    #if DEBUG
-                    print("Selected interval: \(interval.label)")
-                    #endif // DEBUG
                 }) {
                     HStack {
                         Text(interval.label)
                         Spacer()
-                        if interval.isSelected {
+                        if viewModel.isIntervalSelected(interval) {
                             Image(systemName: "checkmark")
                         }
                     }
