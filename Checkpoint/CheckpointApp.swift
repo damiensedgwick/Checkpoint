@@ -33,5 +33,11 @@ struct CheckpointApp: App {
         } label: {
             CountdownTimerView(viewModel: countdownTimerViewModel)
         }
+
+        Window("About Checkpoint", id: "about") {
+            AboutWindowView()
+        }
+        .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
     }
 }

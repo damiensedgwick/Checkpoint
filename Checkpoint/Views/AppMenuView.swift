@@ -10,11 +10,12 @@ import SwiftUI
 struct AppMenuView: View {
     @ObservedObject var viewModel: AppMenuViewModel
     @ObservedObject var timerViewModel: CountdownTimerViewModel
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         VStack {
             Button(action: {
-                // TODO:
+                openWindow(id: "about")
             }) {
                 Label("About Checkpoint", systemImage: "info.circle")
             }
