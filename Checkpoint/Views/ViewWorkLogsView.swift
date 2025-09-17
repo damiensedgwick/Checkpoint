@@ -74,6 +74,18 @@ struct ViewWorkLogsView: View {
                     }
                     .padding(.horizontal, 15)
                     .padding(.top, 5)
+                    .onChange(of: showTextField) {
+                        if showTextField {
+                            isTextFieldFocused = true
+                        }
+                    }
+                    .onChange(of: isTextFieldFocused) {
+                        if !isTextFieldFocused && showTextField {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                showTextField = false
+                            }
+                        }
+                    }
 
                     Table(viewModel.filteredEntries) {
                         TableColumn("Date") { entry in
