@@ -13,6 +13,7 @@ import AppKit
 class WindowManagementService: ObservableObject {
     private var openWindowAction: OpenWindowAction?
     private var cancellables = Set<AnyCancellable>()
+    private var logWorkWindowTimer: Timer?
 
     init() {
         setupEventSubscriptions()
@@ -57,5 +58,54 @@ class WindowManagementService: ObservableObject {
 
         openWindow(id: "logwork")
         bounceDocIcon()
+        setLogWorkWindowFloating()
+    }
+
+    private func setLogWorkWindowFloating() {
+        // Set the log work window to float temporarily
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.findAndFloatLogWorkWindow()
+        }
+
+        // Reset window level after 10 seconds or when user interacts with another app
+        logWorkWindowTimer?.invalidate()
+        logWorkWindowTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.resetLogWorkWindowLevel()
+            }
+        }
+
+        // Listen for app deactivation to reset window level
+        NotificationCenter.default
+            .publisher(for: NSApplication.didResignActiveNotification)
+            .sink { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    self?.resetLogWorkWindowLevel()
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func findAndFloatLogWorkWindow() {
+        for window in NSApplication.shared.windows {
+            if window.title == "Log Work" {
+                window.level = .floating
+                window.makeKeyAndOrderFront(nil)
+                NSApplication.shared.activate(ignoringOtherApps: true)
+                break
+            }
+        }
+    }
+
+    private func resetLogWorkWindowLevel() {
+        logWorkWindowTimer?.invalidate()
+        logWorkWindowTimer = nil
+
+        for window in NSApplication.shared.windows {
+            if window.title == "Log Work" && window.level == .floating {
+                window.level = .normal
+                break
+            }
+        }
     }
 }

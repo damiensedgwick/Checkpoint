@@ -17,55 +17,24 @@ struct LogWorkView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 20) {
-                // Form fields
-                VStack(alignment: .leading, spacing: 16) {
-                    // Project field
-                    VStack(alignment: .leading, spacing: 6) {
+        VStack {
+            VStack {
+                VStack {
+                    VStack {
                         Text("Project")
-                            .font(.headline)
                         
                         TextField("Enter project name", text: $viewModel.project)
-                            .textFieldStyle(.roundedBorder)
-                            .focused($focusedField, equals: .project)
                     }
                     
-                    VStack(alignment: .leading, spacing: 6) {
+                    VStack {
                         Text("Description")
-                            .font(.headline)
                         
                         TextEditor(text: $viewModel.description)
-                            .font(.system(.body))
-                            .focused($focusedField, equals: .description)
-                            .frame(minHeight: 80)
-                            .background(Color(NSColor.textBackgroundColor))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 6)
-                                    .stroke(Color(NSColor.separatorColor), lineWidth: 1)
-                            )
                     }
-                }
-                
-                Spacer()
-                
-                // Loading state
-                if viewModel.isLoading {
-                    HStack {
-                        ProgressView()
-                            .scaleEffect(0.8)
-                        Text("Saving log entry...")
-                            .foregroundColor(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
                 }
             }
-            .padding(24)
             
             HStack {
-                Spacer()
-                
                 Button("Cancel") {
                     dismiss()
                 }
@@ -79,13 +48,11 @@ struct LogWorkView: View {
                         }
                     }
                 }
-                .buttonStyle(.borderedProminent)
                 .disabled(!viewModel.isFormValid || viewModel.isLoading)
                 .keyboardShortcut(.defaultAction)
             }
-            .padding()
         }
-        .background(Color(NSColor.windowBackgroundColor))
+        .padding()
         .onSubmit {
             switch focusedField {
             case .project:

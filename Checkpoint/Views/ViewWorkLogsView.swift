@@ -17,7 +17,7 @@ struct ViewWorkLogsView: View {
                 Spacer()
                 VStack {
                     Text("No log entries found")
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                     
                     Button("Add a new log entry") {
                         openWindow(id: "logwork")
@@ -28,16 +28,26 @@ struct ViewWorkLogsView: View {
                 VStack {
                     HStack {
                         VStack {
-                            Image(systemName: "magnifyingglass")
-                            
-                            TextField("Search log entries...", text: $viewModel.searchText)
-                                .textFieldStyle(.plain)
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+
+                                TextField("Search logs", text: $viewModel.searchText)
+                                    .textFieldStyle(.plain)
+                            }
                         }
-                        
-                        Button(action: {
-                            viewModel.deleteAllEntries()
-                        }) {
-                            Text("Delete All Logs")
+
+                        HStack(spacing: 20) {
+                            if viewModel.logEntries.count > 1 {
+                                Text("\(viewModel.logEntries.count) entries")
+                            } else {
+                                Text("\(viewModel.logEntries.count) entry")
+                            }
+
+                            Button(action: {
+                                viewModel.deleteAllEntries()
+                            }) {
+                                Text("Delete All")
+                            }
                         }
                     }
                     .padding(.vertical, 6)
