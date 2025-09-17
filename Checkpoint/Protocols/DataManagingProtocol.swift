@@ -10,8 +10,11 @@ import Foundation
 protocol DataManagingProtocol {
     var availableIntervals: [Interval] { get }
     var defaultIntervalId: String { get }
+    var logEntries: [LogEntry] { get }
 
     func loadSelectedIntervalId() -> String
     func saveSelectedIntervalId(_ intervalId: String)
     func interval(withId id: String) -> Interval?
+
+    func loadLogEntries() -> [LogEntry]
 }
