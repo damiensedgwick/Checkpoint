@@ -44,20 +44,28 @@ struct CheckpointApp: App {
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
+        .defaultPosition(.center)
+        .windowLevel(.floating)
 
         Window("Log Work", id: "logwork") {
             LogWorkView()
         }
         .windowStyle(.hiddenTitleBar)
+        .defaultPosition(.center)
+        .windowLevel(.floating)
 
         Window("View Work Logs", id: "viewlogs") {
             ViewWorkLogsView()
         }
         .windowStyle(.hiddenTitleBar)
+        .defaultPosition(.center)
+        .windowLevel(.floating)
 
         Window("Settings", id: "settings") {
             SettingsView()
         }
         .windowStyle(.hiddenTitleBar)
+        .defaultPosition(.center)
+        .windowLevel(.floating)
     }
 }
