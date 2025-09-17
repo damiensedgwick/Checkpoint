@@ -55,7 +55,9 @@ struct ViewWorkLogsView: View {
                         .width(min: 45, ideal: 45)
 
                         TableColumn("Delete") { entry in
-                            Button(action: {}) {
+                            Button(action: {
+                                viewModel.deleteEntry(entry)
+                            }) {
                                 Image(systemName: "trash")
                             }
                         }
@@ -63,6 +65,14 @@ struct ViewWorkLogsView: View {
                     }
                 }
             }
+        }
+        .alert("Delete log entry", isPresented: $viewModel.showingDeleteAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Delete", role: .destructive) {
+                viewModel.confirmDelete()
+            }
+        } message: {
+            Text("This action cannot be undone")
         }
     }
 }

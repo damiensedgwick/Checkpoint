@@ -12,6 +12,8 @@ import Foundation
 class ViewWorkLogsViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var logEntries: [LogEntry] = []
+    @Published var showingDeleteAlert = false
+    @Published var entryToDelete: LogEntry?
 
     private let dataManager: DataManagingProtocol
 
@@ -22,6 +24,19 @@ class ViewWorkLogsViewModel: ObservableObject {
 
     convenience init() {
         self.init(dataManager: DataManagerService())
+    }
+
+
+    func deleteEntry(_ entry: LogEntry) {
+        entryToDelete = entry
+        showingDeleteAlert = true
+    }
+
+    func confirmDelete() {
+        if let entry = entryToDelete {
+            dataManager.deleteLogEntry(entry)
+            entryToDelete = nil
+        }
     }
 
     var filteredEntries: [LogEntry] {

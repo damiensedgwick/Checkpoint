@@ -58,4 +58,15 @@ class DataManagerService: DataManagingProtocol {
         }
         return logEntries
     }
+
+    func deleteLogEntry(_ logEntry: LogEntry) -> Void {
+        logEntries.removeAll { $0.id == logEntry.id }
+        saveLogEntries()
+    }
+
+    private func saveLogEntries() {
+        if let data = try? JSONEncoder().encode(logEntries) {
+            userDefaults.set(data, forKey: logEntriesKey)
+        }
+    }
 }

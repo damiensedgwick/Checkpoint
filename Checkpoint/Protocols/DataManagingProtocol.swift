@@ -17,4 +17,5 @@ protocol DataManagingProtocol {
     func interval(withId id: String) -> Interval?
 
     func loadLogEntries() -> [LogEntry]
+    func deleteLogEntry(_ logEntry: LogEntry) -> Void
 }
