@@ -34,12 +34,13 @@ struct LogWorkView: View {
                 }
             }
             
-            HStack {
+            HStack(spacing: 16) {
                 Button("Cancel") {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
-                
+                .buttonStyle(.borderless)
+
                 Button("Save Log Entry") {
                     Task {
                         await viewModel.saveLogEntry()
@@ -50,6 +51,7 @@ struct LogWorkView: View {
                 }
                 .disabled(!viewModel.isFormValid || viewModel.isLoading)
                 .keyboardShortcut(.defaultAction)
+                .buttonStyle(.glass)
             }
         }
         .padding()
