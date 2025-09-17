@@ -12,13 +12,11 @@ struct ViewWorkLogsView: View {
 
     var body: some View {
         VStack {
-            Text("View Work Logs View")
-                .font(.body)
-                .fontWeight(.bold)
-
             if viewModel.logEntries.isEmpty {
+                Spacer()
                 Text("No log entries found")
                     .foregroundColor(.secondary)
+                Spacer()
             }
         }
     }
@@ -26,5 +24,5 @@ struct ViewWorkLogsView: View {
 
 #Preview {
     ViewWorkLogsView()
-        .frame(width: 200, height: 200)
+        .frame(width: 500, height: 300)
 }

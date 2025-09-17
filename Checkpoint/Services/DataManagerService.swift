@@ -56,10 +56,6 @@ class DataManagerService: DataManagingProtocol {
             #endif
             logEntries = entries
         }
-
-        #if DEBUG
-        print("No saved log entries found")
-        #endif
-        return []
+        return logEntries
     }
 }
