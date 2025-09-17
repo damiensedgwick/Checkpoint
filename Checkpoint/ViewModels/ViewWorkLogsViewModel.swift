@@ -34,6 +34,7 @@ class ViewWorkLogsViewModel: ObservableObject {
 
     func confirmDelete() {
         if let entry = entryToDelete {
+            logEntries.removeAll { $0.id == entry.id }
             dataManager.deleteLogEntry(entry)
             entryToDelete = nil
         }

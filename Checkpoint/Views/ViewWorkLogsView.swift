@@ -9,13 +9,20 @@ import SwiftUI
 
 struct ViewWorkLogsView: View {
     @StateObject private var viewModel = ViewWorkLogsViewModel()
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         VStack {
             if viewModel.logEntries.isEmpty {
                 Spacer()
-                Text("No log entries found")
-                    .foregroundColor(.secondary)
+                VStack {
+                    Text("No log entries found")
+                        .foregroundColor(.secondary)
+
+                    Button("Add a new log entry") {
+                        openWindow(id: "logwork")
+                    }
+                }
                 Spacer()
             } else {
                 VStack {
