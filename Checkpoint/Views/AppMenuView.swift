@@ -79,12 +79,12 @@ struct AppMenuView: View {
 
             Divider()
 
-            Button(action: {
-                openWindow(id: "settings")
-            }) {
-                Label("Settings", systemImage: "gear")
-            }
-
+            //            Button(action: {
+            //                openWindow(id: "settings")
+            //            }) {
+            //                Label("Settings", systemImage: "gear")
+            //            }
+            
             Divider()
 
             Button(action: {
