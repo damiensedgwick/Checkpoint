@@ -80,7 +80,7 @@ struct AppMenuView: View {
             Divider()
 
             Button(action: {
-                // TODO:
+                openWindow(id: "settings")
             }) {
                 Label("Settings", systemImage: "gear")
             }

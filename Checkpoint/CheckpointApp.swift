@@ -49,5 +49,10 @@ struct CheckpointApp: App {
             ViewWorkLogsView()
         }
         .windowStyle(.hiddenTitleBar)
+
+        Window("Settings", id: "settings") {
+            SettingsView()
+        }
+        .windowStyle(.hiddenTitleBar)
     }
 }

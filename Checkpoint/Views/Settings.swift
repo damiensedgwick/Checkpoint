@@ -1,0 +1,24 @@
+//
+//  AboutWindowView.swift
+//  Checkpoint
+//
+//  Created by Damien Sedgwick on 16/09/2025.
+//
+
+import SwiftUI
+
+struct SettingsView: View {
+    var body: some View {
+        VStack {
+            Text("Settings View")
+                .font(.body)
+                .fontWeight(.bold)
+
+        }
+    }
+}
+
+#Preview {
+    SettingsView()
+        .frame(width: 200, height: 200)
+}
