@@ -11,6 +11,8 @@ import SwiftUI
 struct CheckpointApp: App {
     @StateObject private var appViewModel: AppMenuViewModel
     @StateObject private var countdownTimerViewModel: CountdownTimerViewModel
+    @StateObject private var windowManager = WindowManagementService()
+    @Environment(\.openWindow) private var openWindow
 
     init() {
         let service = CountdownTimerService()
@@ -30,6 +32,9 @@ struct CheckpointApp: App {
                 viewModel: appViewModel,
                 timerViewModel: countdownTimerViewModel
             )
+            .onAppear {
+                windowManager.configure(openWindow: openWindow)
+            }
         } label: {
             CountdownTimerView(viewModel: countdownTimerViewModel)
         }

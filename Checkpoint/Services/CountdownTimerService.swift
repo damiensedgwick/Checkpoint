@@ -169,10 +169,10 @@ final class CountdownTimerService: CountdownTimerProtocol {
                     let total = await state.totalDuration
                     await setTimeRemaining(total)
 
-                    // TODO: Log Work Popup AND Notifciation Send Off AND OR Dock Icon Bounce
+                    AppEventPublisher.shared.publish(.timerCompleted)
 
                     #if DEBUG
-                    print("Timer reached zero")
+                    print("Timer completed - event published")
                     #endif
                     break
                 } else {
