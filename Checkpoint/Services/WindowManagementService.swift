@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import AppKit
 
 @MainActor
 class WindowManagementService: ObservableObject {
@@ -44,6 +45,10 @@ class WindowManagementService: ObservableObject {
         }
     }
 
+    private func bounceDocIcon() {
+        NSApplication.shared.requestUserAttention(.criticalRequest)
+    }
+
     private func openLogWorkWindow() {
         guard let openWindow = openWindowAction else {
             print("Window management not configured")
@@ -51,5 +56,6 @@ class WindowManagementService: ObservableObject {
         }
 
         openWindow(id: "logwork")
+        bounceDocIcon()
     }
 }
