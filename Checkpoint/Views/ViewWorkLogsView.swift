@@ -8,12 +8,18 @@
 import SwiftUI
 
 struct ViewWorkLogsView: View {
+    @StateObject private var viewModel = ViewWorkLogsViewModel()
+
     var body: some View {
         VStack {
             Text("View Work Logs View")
                 .font(.body)
                 .fontWeight(.bold)
 
+            if viewModel.logEntries.isEmpty {
+                Text("No log entries found")
+                    .foregroundColor(.secondary)
+            }
         }
     }
 }

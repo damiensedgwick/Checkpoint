@@ -49,11 +49,12 @@ class DataManagerService: DataManagingProtocol {
     }
 
     func loadLogEntries() -> [LogEntry] {
-        if let logEntries = userDefaults.object(forKey: logEntriesKey) as? [LogEntry] {
+        if let data = userDefaults.data(forKey: logEntriesKey),
+           let entries = try? JSONDecoder().decode([LogEntry].self, from: data) {
             #if DEBUG
-            print("Loaded \(logEntries.count) log entries")
+            print("Loaded \(entries.count) log entries")
             #endif
-            return logEntries
+            logEntries = entries
         }
 
         #if DEBUG
