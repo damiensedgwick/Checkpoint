@@ -10,6 +10,7 @@ import Foundation
 
 @MainActor
 class ViewWorkLogsViewModel: ObservableObject {
+    @Published var searchText = ""
     @Published var logEntries: [LogEntry] = []
 
     private let dataManager: DataManagingProtocol
@@ -21,5 +22,16 @@ class ViewWorkLogsViewModel: ObservableObject {
 
     convenience init() {
         self.init(dataManager: DataManagerService())
+    }
+
+    var filteredEntries: [LogEntry] {
+        if searchText.isEmpty {
+            return logEntries
+        } else {
+            return logEntries.filter { entry in
+                entry.project.localizedCaseInsensitiveContains(searchText) ||
+                entry.description.localizedCaseInsensitiveContains(searchText)
+            }
+        }
     }
 }
