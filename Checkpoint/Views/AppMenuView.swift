@@ -23,13 +23,13 @@ struct AppMenuView: View {
             Divider()
 
             Button(action: {
-                // TODO:
+                openWindow(id: "logwork")
             }) {
                 Label("Add Log", systemImage: "plus")
             }
 
             Button(action: {
-                // TODO:
+                openWindow(id: "viewlogs")
             }) {
                 Label("View Logs", systemImage: "list.dash")
             }

@@ -39,5 +39,15 @@ struct CheckpointApp: App {
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
+
+        Window("Log Work", id: "logwork") {
+            LogWorkView()
+        }
+        .windowStyle(.hiddenTitleBar)
+
+        Window("View Work Logs", id: "viewlogs") {
+            ViewWorkLogsView()
+        }
+        .windowStyle(.hiddenTitleBar)
     }
 }
