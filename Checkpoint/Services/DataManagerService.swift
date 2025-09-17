@@ -1,18 +1,22 @@
 //
-//  DataManager.swift
+//  DataManagerService.swift
 //  Checkpoint
 //
 //  Created by Damien Sedgwick on 14/09/2025.
 //
 
 import Foundation
+import Combine
 
-class DataManagerService: DataManagingProtocol {
-    var logEntries: [LogEntry] = []
+@MainActor
+class DataManagerService: DataManagingProtocol, ObservableObject {
+    @Published private(set) var logEntries: [LogEntry] = []
 
     private let userDefaults = UserDefaults.standard
     private let intervalKey = "checkpoint_interval"
     private let logEntriesKey = "checkpoint_log_entries"
+
+    private let logEntriesSubject = CurrentValueSubject<[LogEntry], Never>([])
 
     var availableIntervals: [Interval] {
         IntervalConfiguration.allIntervals
@@ -20,6 +24,14 @@ class DataManagerService: DataManagingProtocol {
 
     var defaultIntervalId: String {
         IntervalConfiguration.defaultIntervalId
+    }
+
+    var logEntriesPublisher: AnyPublisher<[LogEntry], Never> {
+        logEntriesSubject.eraseToAnyPublisher()
+    }
+
+    init() {
+        loadLogEntries()
     }
 
     func loadSelectedIntervalId() -> String {
@@ -48,25 +60,112 @@ class DataManagerService: DataManagingProtocol {
         availableIntervals.first { $0.id == id }
     }
 
+    @discardableResult
     func loadLogEntries() -> [LogEntry] {
-        if let data = userDefaults.data(forKey: logEntriesKey),
-           let entries = try? JSONDecoder().decode([LogEntry].self, from: data) {
+        do {
+            if let data = userDefaults.data(forKey: logEntriesKey) {
+                let decoder = JSONDecoder()
+                let entries = try decoder.decode([LogEntry].self, from: data)
+                logEntries = entries
+                logEntriesSubject.send(entries)
+
+                #if DEBUG
+                print("Loaded \(entries.count) log entries")
+                #endif
+            }
+        } catch {
             #if DEBUG
-            print("Loaded \(entries.count) log entries")
+            print("Failed to load log entries: \(error)")
             #endif
-            logEntries = entries
+            logEntries = []
+            logEntriesSubject.send([])
         }
+
         return logEntries
     }
 
-    func deleteLogEntry(_ logEntry: LogEntry) -> Void {
-        logEntries.removeAll { $0.id == logEntry.id }
-        saveLogEntries()
+    func saveLogEntry(_ logEntry: LogEntry, timeSpent: Duration) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            do {
+                let entry = LogEntry(
+                    project: logEntry.project,
+                    description: logEntry.description,
+                    timeSpent: timeSpent
+                )
+
+                logEntries.insert(entry, at: 0)
+                try saveLogEntriesToStorage()
+                logEntriesSubject.send(logEntries)
+
+                #if DEBUG
+                print("Successfully saved log entry: \(entry.project)")
+                #endif
+
+                continuation.resume()
+            } catch {
+                #if DEBUG
+                print("Failed to save log entry: \(error)")
+                #endif
+                continuation.resume(throwing: DataManagerError.saveError(error.localizedDescription))
+            }
+        }
     }
 
-    private func saveLogEntries() {
-        if let data = try? JSONEncoder().encode(logEntries) {
+    func deleteLogEntry(_ logEntry: LogEntry) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            do {
+                logEntries.removeAll { $0.id == logEntry.id }
+                try saveLogEntriesToStorage()
+                logEntriesSubject.send(logEntries)
+
+                #if DEBUG
+                print("Successfully deleted log entry: \(logEntry.project)")
+                #endif
+
+                continuation.resume()
+            } catch {
+                #if DEBUG
+                print("Failed to delete log entry: \(error)")
+                #endif
+                continuation.resume(throwing: DataManagerError.deleteError(error.localizedDescription))
+            }
+        }
+    }
+
+    func deleteAllLogs() async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            do {
+                logEntries.removeAll()
+                try saveLogEntriesToStorage()
+                logEntriesSubject.send(logEntries)
+
+                #if DEBUG
+                print("Successfully deleted all log entries")
+                #endif
+
+                continuation.resume()
+            } catch {
+                #if DEBUG
+                print("Failed to delete all log entries: \(error)")
+                #endif
+                continuation.resume(throwing: DataManagerError.deleteError(error.localizedDescription))
+            }
+        }
+    }
+
+    private func saveLogEntriesToStorage() throws {
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(logEntries)
             userDefaults.set(data, forKey: logEntriesKey)
+
+            if !userDefaults.synchronize() {
+                throw DataManagerError.saveError("Failed to synchronize UserDefaults")
+            }
+        } catch let error as EncodingError {
+            throw DataManagerError.saveError("Encoding failed: \(error.localizedDescription)")
+        } catch {
+            throw DataManagerError.saveError(error.localizedDescription)
         }
     }
 }

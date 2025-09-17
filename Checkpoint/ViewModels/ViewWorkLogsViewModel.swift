@@ -13,19 +13,26 @@ class ViewWorkLogsViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var logEntries: [LogEntry] = []
     @Published var showingDeleteAlert = false
+    @Published var showingDeleteAllAlert = false
     @Published var entryToDelete: LogEntry?
+    @Published var isDeleting = false
+    @Published var errorMessage = ""
+    @Published var showingErrorAlert = false
 
-    private let dataManager: DataManagingProtocol
+    private let logEntryStore: LogEntryStore
+    private var cancellables = Set<AnyCancellable>()
 
-    init(dataManager: DataManagingProtocol) {
-        self.dataManager = dataManager
-        self.logEntries = dataManager.loadLogEntries()
+    init(logEntryStore: LogEntryStore? = nil) {
+        self.logEntryStore = logEntryStore ?? LogEntryStore.shared
+        setupSubscriptions()
     }
 
-    convenience init() {
-        self.init(dataManager: DataManagerService())
+    private func setupSubscriptions() {
+        logEntryStore.$logEntries
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.logEntries, on: self)
+            .store(in: &cancellables)
     }
-
 
     func deleteEntry(_ entry: LogEntry) {
         entryToDelete = entry
@@ -33,10 +40,44 @@ class ViewWorkLogsViewModel: ObservableObject {
     }
 
     func confirmDelete() {
-        if let entry = entryToDelete {
-            logEntries.removeAll { $0.id == entry.id }
-            dataManager.deleteLogEntry(entry)
-            entryToDelete = nil
+        guard let entry = entryToDelete else { return }
+
+        isDeleting = true
+        entryToDelete = nil
+
+        Task {
+            do {
+                try await logEntryStore.deleteLogEntry(entry)
+                #if DEBUG
+                print("Successfully deleted entry: \(entry.project)")
+                #endif
+            } catch {
+                errorMessage = error.localizedDescription
+                showingErrorAlert = true
+                #if DEBUG
+                print("Failed to delete entry: \(error)")
+                #endif
+            }
+            isDeleting = false
+        }
+    }
+
+    func deleteAllEntries() {
+        showingDeleteAllAlert = true
+    }
+
+    func confirmDeleteAllEntries() async {
+        do {
+            try await logEntryStore.deleteAllLogs()
+            #if DEBUG
+            print("Successfully deleted all entries")
+            #endif
+        } catch {
+            errorMessage = error.localizedDescription
+            showingErrorAlert = true
+            #if DEBUG
+            print("Failed to delete all entries: \(error)")
+            #endif
         }
     }
 
