@@ -17,23 +17,46 @@ struct LogWorkView: View {
     }
     
     var body: some View {
-        VStack {
-            VStack {
-                VStack {
-                    VStack {
-                        Text("Project")
-                        
-                        TextField("Enter project name", text: $viewModel.project)
-                    }
-                    
-                    VStack {
-                        Text("Description")
-                        
-                        TextEditor(text: $viewModel.description)
-                    }
+        VStack(spacing: 24) {
+            VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Project")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.secondary)
+
+                    TextField("Enter project name", text: $viewModel.project)
+                        .textFieldStyle(.plain)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .background(Color(nsColor: .controlBackgroundColor))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color(nsColor: .separatorColor), lineWidth: 0.5)
+                        )
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Description")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.secondary)
+
+                    TextEditor(text: $viewModel.description)
+                        .font(.body)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 6)
+                        .frame(minHeight: 80)
+                        .background(Color(nsColor: .controlBackgroundColor))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color(nsColor: .separatorColor), lineWidth: 0.5)
+                        )
                 }
             }
-            
+
             HStack(spacing: 16) {
                 Button("Cancel") {
                     dismiss()
