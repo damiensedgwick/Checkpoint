@@ -7,6 +7,14 @@ set intervals.
 
 ## macOS 26 (Beta)
 
+⚠️ There should be no breaking changes with your existing data, however to
+be safe, it is recommended to go to settings and export your existing data
+before installing and upgrading to the v2.0.0-beta release. This will be in
+a JSON format and will ensure that your data is not lost. If there are any
+issues please open one using GitHub and I will do my best to resolve it. An
+import feature is currently being worked on to remedy any problems. Installing
+the previous release should mean your logs are usuable just as they were before ⚠️
+
 1. Download the beta release [v2.0.0-beta](https://github.com/damiensedgwick/Checkpoint/releases/tag/v2.0.0-beta)
 2. Drag the Checkpoint app into your applications folder
 3. Open up Checkpoint and start logging your work
