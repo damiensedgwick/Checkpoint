@@ -108,18 +108,35 @@ struct ViewWorkLogsView: View {
                         }
                         .width(min: 300, ideal: 300)
 
-                        TableColumn("Time Spent") { entry in
+                        TableColumn("Duration") { entry in
                             Text(entry.formattedTimeSpent)
                         }
                         .width(min: 45, ideal: 45)
 
-                        TableColumn("Delete") { entry in
-                            Button(action: {
-                                viewModel.deleteEntry(entry)
-                            }) {
-                                Text("delete")
+                        TableColumn("Actions") { entry in
+                            HStack(spacing: 10) {
+                                Button(action: {
+                                    viewModel.editEntry(entry)
+                                }) {
+                                    Image(systemName: "pencil")
+                                        .font(.subheadline)
+                                        .padding(.horizontal, 3)
+                                        .padding(.vertical, 3)
+                                }
+                                .buttonBorderShape(.circle)
+                                .buttonStyle(.glass)
+
+                                Button(action: {
+                                    viewModel.deleteEntry(entry)
+                                }) {
+                                    Image(systemName: "trash")
+                                        .font(.subheadline)
+                                        .padding(.horizontal, 3)
+                                        .padding(.vertical, 3)
+                                }
+                                .buttonBorderShape(.circle)
+                                .buttonStyle(.glass)
                             }
-                            .buttonStyle(.glass)
                         }
                         .width(min: 20, ideal: 20)
                     }
