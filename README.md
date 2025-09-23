@@ -7,7 +7,7 @@ set intervals.
 
 ## macOS 26 (Beta)
 
-1. Download the beta release [v2.0.0 (beta)](https://github.com/damiensedgwick/Checkpoint/releases/tag/v1.1.0)
+1. Download the beta release [v2.0.0-beta](https://github.com/damiensedgwick/Checkpoint/releases/tag/v2.0.0-beta)
 2. Drag the Checkpoint app into your applications folder
 3. Open up Checkpoint and start logging your work
 
