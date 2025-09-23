@@ -5,10 +5,13 @@ A quick and dirty macOS app built using Swift and SwiftUI that helps you
 track your work and maintain productivity through logging your work at
 set intervals.
 
-## macOS 26
+## macOS 26 (Beta)
 
-Version 2 of Checkpoint is currently being developed to support macOS 26, 
-hopefully this should be done soon!
+1. Download the beta release [v2.0.0 (beta)](https://github.com/damiensedgwick/Checkpoint/releases/tag/v1.1.0)
+2. Drag the Checkpoint app into your applications folder
+3. Open up Checkpoint and start logging your work
+
+<img width="3024" height="1964" alt="Screenshot 2025-07-30 at 11 50 49" src="https://github.com/user-attachments/assets/7bc83be5-6c0f-4da2-a665-773d3e4eb2bd" />
 
 ## macOS Sequoia (15)
 
