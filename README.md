@@ -5,10 +5,10 @@ A quick and dirty macOS app built using Swift and SwiftUI that helps you
 track your work and maintain productivity through logging your work at
 set intervals.
 
-## macOS 26 + Liquid Glass
+## macOS 26
 
-Version 2 of Checkpoint is currently being developed to support macOS 26
-and liquid glass, hopefully this should be done soon!
+Version 2 of Checkpoint is currently being developed to support macOS 26, 
+hopefully this should be done soon!
 
 ## macOS Sequoia (15)
 
