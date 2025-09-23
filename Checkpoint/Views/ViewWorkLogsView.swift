@@ -115,16 +115,8 @@ struct ViewWorkLogsView: View {
 
                         TableColumn("Actions") { entry in
                             HStack(spacing: 10) {
-                                Button(action: {
-                                    viewModel.editEntry(entry)
-                                }) {
-                                    Image(systemName: "pencil")
-                                        .font(.subheadline)
-                                        .padding(.horizontal, 3)
-                                        .padding(.vertical, 3)
-                                }
-                                .buttonBorderShape(.circle)
-                                .buttonStyle(.glass)
+
+                                // TODO: Add a 'Edit Log' button with a pencil icon
 
                                 Button(action: {
                                     viewModel.deleteEntry(entry)

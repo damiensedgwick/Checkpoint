@@ -34,10 +34,6 @@ class ViewWorkLogsViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func editEntry(_ entry: LogEntry) {
-        // TODO:    
-    }
-
     func deleteEntry(_ entry: LogEntry) {
         entryToDelete = entry
         showingDeleteAlert = true
