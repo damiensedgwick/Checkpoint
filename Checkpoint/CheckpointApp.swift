@@ -57,11 +57,5 @@ struct CheckpointApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .defaultPosition(.center)
-
-        Window("Settings", id: "settings") {
-            SettingsView()
-        }
-        .windowStyle(.hiddenTitleBar)
-        .defaultPosition(.center)
     }
 }
