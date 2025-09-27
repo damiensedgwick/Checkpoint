@@ -84,7 +84,7 @@ struct AppMenuView: View {
             Button(action: {
                 viewModel.downloadAllData()
             }) {
-                Label("Download Data", systemImage: "square.and.arrow.down")
+                Label("Download Logs", systemImage: "square.and.arrow.down")
             }
             
             Button(action: {
