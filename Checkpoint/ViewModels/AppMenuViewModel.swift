@@ -11,6 +11,8 @@ import Foundation
 @MainActor
 class AppMenuViewModel: ObservableObject {
     @Published var selectedIntervalId: String
+    @Published var showingExporter = false
+    @Published var exportDocument: CSVDocument?
 
     var intervals: [Interval] {
         dataManager.availableIntervals
@@ -43,6 +45,7 @@ class AppMenuViewModel: ObservableObject {
     }
     
     func downloadAllData() {
-        dataManager.downloadAllData()
+        exportDocument = dataManager.downloadAllData()
+        showingExporter = true
     }
 }

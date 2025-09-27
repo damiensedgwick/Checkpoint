@@ -43,5 +43,5 @@ protocol DataManagingProtocol {
     func deleteLogEntry(_ logEntry: LogEntry) async throws
     func deleteAllLogs() async throws
     
-    func downloadAllData () -> Void
+    func downloadAllData() -> CSVDocument
 }

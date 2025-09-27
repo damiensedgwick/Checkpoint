@@ -153,7 +153,9 @@ class DataManagerService: DataManagingProtocol, ObservableObject {
         }
     }
     
-    func downloadAllData() {}
+    func downloadAllData() -> CSVDocument {
+        return CSVDocument(logEntries: logEntries)
+    }
 
     private func saveLogEntriesToStorage() throws {
         do {

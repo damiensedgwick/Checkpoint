@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct AppMenuView: View {
     @ObservedObject var viewModel: AppMenuViewModel
@@ -107,6 +108,26 @@ struct AppMenuView: View {
                 Label("Quit Checkpoint", systemImage: "xmark.circle")
             }
         }
+        .fileExporter(
+            isPresented: $viewModel.showingExporter,
+            document: viewModel.exportDocument,
+            contentType: .commaSeparatedText,
+            defaultFilename: generateDefaultFilename()
+        ) { result in
+            switch result {
+            case .success(let url):
+                print("Successfully exported to: \(url)")
+            case .failure(let error):
+                print("Export failed: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func generateDefaultFilename() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let dateString = formatter.string(from: Date())
+        return "checkpoint-logs-\(dateString).csv"
     }
 }
 
