@@ -17,9 +17,9 @@ struct AppMenuView: View {
     var body: some View {
         VStack {
             Button(action: {
-                // TODO:
+                openWindow(id: "about")
             }) {
-                Label("Launch At Login", systemImage: "autostartstop")
+                Label("About Checkpoint", systemImage: "info.circle")
             }
             
             Divider()
@@ -84,24 +84,17 @@ struct AppMenuView: View {
             Button(action: {
                 viewModel.downloadAllData()
             }) {
-                Label("Download Logs", systemImage: "square.and.arrow.down")
+                Label("Download All Logs", systemImage: "square.and.arrow.down")
             }
             
             Button(action: {
-                // TODO: Dangerous, need an alert or something
-                // viewModel.deleteAllLogs()
+                // TODO:
             }) {
-                Label("Delete All Logs", systemImage: "trash")
+                Label("Launch At Login", systemImage: "autostartstop")
             }
             
             Divider()
-            
-            Button(action: {
-                openWindow(id: "about")
-            }) {
-                Label("About Checkpoint", systemImage: "info.circle")
-            }
-            
+
             Button(action: {
                 NSApplication.shared.terminate(nil)
             }) {
