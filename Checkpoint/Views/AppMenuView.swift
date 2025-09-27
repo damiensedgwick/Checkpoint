@@ -90,17 +90,11 @@ struct AppMenuView: View {
             Button(action: {
                 viewModel.toggleLaunchAtLogin()
             }) {
-                HStack {
-                    Label("Launch At Login", systemImage: "autostartstop")
-                    Spacer()
-                    if viewModel.launchAtLogin {
-                        Image(systemName: "checkmark")
-                    }
-                }
+                Label("Launch At Login", systemImage: "autostartstop")
             }
             
             Divider()
-
+            
             Button(action: {
                 NSApplication.shared.terminate(nil)
             }) {
@@ -121,7 +115,7 @@ struct AppMenuView: View {
             }
         }
     }
-
+    
     private func generateDefaultFilename() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
