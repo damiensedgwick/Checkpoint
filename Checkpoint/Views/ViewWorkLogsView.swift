@@ -10,6 +10,7 @@ import SwiftUI
 struct ViewWorkLogsView: View {
     @State private var showTextField: Bool = false
     @FocusState private var isTextFieldFocused: Bool
+    @State private var logEntryToEdit: LogEntry?
 
     @StateObject private var viewModel = ViewWorkLogsViewModel()
     @Environment(\.openWindow) private var openWindow
@@ -90,33 +91,46 @@ struct ViewWorkLogsView: View {
                     Table(viewModel.filteredEntries) {
                         TableColumn("Date") { entry in
                             Text(entry.formattedDate)
+                                .textSelection(.enabled)
                         }
                         .width(min: 80, ideal: 80)
 
                         TableColumn("Time") { entry in
                             Text(entry.formattedTime)
+                                .textSelection(.enabled)
                         }
                         .width(min: 45, ideal: 45)
 
                         TableColumn("Project") { entry in
                             Text(entry.project)
+                                .textSelection(.enabled)
                         }
                         .width(min: 120, ideal: 120)
 
                         TableColumn("Description") { entry in
                             Text(entry.description)
+                                .textSelection(.enabled)
                         }
                         .width(min: 300, ideal: 300)
 
                         TableColumn("Duration") { entry in
                             Text(entry.formattedTimeSpent)
+                                .textSelection(.enabled)
                         }
                         .width(min: 45, ideal: 45)
 
                         TableColumn("Actions") { entry in
                             HStack(spacing: 10) {
-
-                                // TODO: Add a 'Edit Log' button with a pencil icon
+                                Button(action: {
+                                    logEntryToEdit = entry
+                                }) {
+                                    Image(systemName: "pencil")
+                                        .font(.subheadline)
+                                        .padding(.horizontal, 3)
+                                        .padding(.vertical, 3)
+                                }
+                                .buttonBorderShape(.circle)
+                                .buttonStyle(.glass)
 
                                 Button(action: {
                                     viewModel.deleteEntry(entry)
@@ -130,7 +144,7 @@ struct ViewWorkLogsView: View {
                                 .buttonStyle(.glass)
                             }
                         }
-                        .width(min: 20, ideal: 20)
+                        .width(min: 80, ideal: 80)
                     }
                 }
             }
@@ -162,6 +176,9 @@ struct ViewWorkLogsView: View {
             Text(viewModel.errorMessage)
         }
         .disabled(viewModel.isDeleting)
+        .sheet(item: $logEntryToEdit) { entry in
+            EditLogView(logEntry: entry)
+        }
     }
 }
 

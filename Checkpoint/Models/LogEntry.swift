@@ -26,6 +26,20 @@ struct LogEntry: Identifiable, Codable {
         self.description = description
         self.timeSpent = timeSpent
     }
+
+    init(
+        id: UUID,
+        date: Date,
+        project: String,
+        description: String,
+        timeSpent: Duration? = nil
+    ) {
+        self.id = id
+        self.date = date
+        self.project = project
+        self.description = description
+        self.timeSpent = timeSpent
+    }
 }
 
 extension LogEntry {

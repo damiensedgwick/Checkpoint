@@ -40,6 +40,7 @@ protocol DataManagingProtocol {
 
     func loadLogEntries() -> [LogEntry]
     func saveLogEntry(_ logEntry: LogEntry, timeSpent: Duration) async throws
+    func updateLogEntry(_ logEntry: LogEntry) async throws
     func deleteLogEntry(_ logEntry: LogEntry) async throws
     func deleteAllLogs() async throws
     

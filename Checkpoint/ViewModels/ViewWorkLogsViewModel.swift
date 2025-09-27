@@ -91,4 +91,5 @@ class ViewWorkLogsViewModel: ObservableObject {
             }
         }
     }
+
 }

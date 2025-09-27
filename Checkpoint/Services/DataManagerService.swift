@@ -111,6 +111,34 @@ class DataManagerService: DataManagingProtocol, ObservableObject {
         }
     }
 
+    func updateLogEntry(_ logEntry: LogEntry) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            do {
+                if let index = logEntries.firstIndex(where: { $0.id == logEntry.id }) {
+                    logEntries[index] = logEntry
+                    try saveLogEntriesToStorage()
+                    logEntriesSubject.send(logEntries)
+
+                    #if DEBUG
+                    print("Successfully updated log entry: \(logEntry.project)")
+                    #endif
+
+                    continuation.resume()
+                } else {
+                    #if DEBUG
+                    print("Log entry not found for update: \(logEntry.id)")
+                    #endif
+                    continuation.resume(throwing: DataManagerError.saveError("Log entry not found"))
+                }
+            } catch {
+                #if DEBUG
+                print("Failed to update log entry: \(error)")
+                #endif
+                continuation.resume(throwing: DataManagerError.saveError(error.localizedDescription))
+            }
+        }
+    }
+
     func deleteLogEntry(_ logEntry: LogEntry) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             do {

@@ -38,6 +38,10 @@ class LogEntryStore: ObservableObject {
         try await dataManager.saveLogEntry(logEntry, timeSpent: timeSpent)
     }
 
+    func updateLogEntry(_ logEntry: LogEntry) async throws {
+        try await dataManager.updateLogEntry(logEntry)
+    }
+
     func deleteLogEntry(_ logEntry: LogEntry) async throws {
         try await dataManager.deleteLogEntry(logEntry)
     }
