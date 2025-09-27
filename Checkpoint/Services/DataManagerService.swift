@@ -152,6 +152,8 @@ class DataManagerService: DataManagingProtocol, ObservableObject {
             }
         }
     }
+    
+    func downloadAllData() {}
 
     private func saveLogEntriesToStorage() throws {
         do {

@@ -11,6 +11,7 @@ struct AppMenuView: View {
     @ObservedObject var viewModel: AppMenuViewModel
     @ObservedObject var timerViewModel: CountdownTimerViewModel
     @Environment(\.openWindow) private var openWindow
+    @State private var showingDeleteAlert = false
     
     var body: some View {
         VStack {
@@ -80,13 +81,14 @@ struct AppMenuView: View {
             Divider()
             
             Button(action: {
-                // TODO:
+                viewModel.downloadAllData()
             }) {
                 Label("Download Data", systemImage: "square.and.arrow.down")
             }
             
             Button(action: {
-                // TODO:
+                // TODO: Dangerous, need an alert or something
+                // viewModel.deleteAllLogs()
             }) {
                 Label("Delete All Logs", systemImage: "trash")
             }

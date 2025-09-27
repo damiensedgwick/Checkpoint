@@ -42,4 +42,6 @@ protocol DataManagingProtocol {
     func saveLogEntry(_ logEntry: LogEntry, timeSpent: Duration) async throws
     func deleteLogEntry(_ logEntry: LogEntry) async throws
     func deleteAllLogs() async throws
+    
+    func downloadAllData () -> Void
 }

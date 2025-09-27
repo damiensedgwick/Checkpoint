@@ -37,4 +37,12 @@ class AppMenuViewModel: ObservableObject {
     func isIntervalSelected(_ interval: Interval) -> Bool {
         interval.id == selectedIntervalId
     }
+    
+    func deleteAllLogs() async {
+        try? await dataManager.deleteAllLogs()
+    }
+    
+    func downloadAllData() {
+        dataManager.downloadAllData()
+    }
 }
