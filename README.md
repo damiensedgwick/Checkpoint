@@ -1,6 +1,5 @@
 # Checkpoint
 
-
 A quick and dirty macOS app built using Swift and SwiftUI that helps you
 track your work and maintain productivity through logging your work at
 set intervals.
@@ -11,7 +10,7 @@ set intervals.
 2. Drag the Checkpoint app into your applications folder
 3. Open up Checkpoint and start logging your work
 
-<img width="3024" height="1964" alt="Screenshot 2025-07-30 at 11 50 49" src="https://github.com/user-attachments/assets/7bc83be5-6c0f-4da2-a665-773d3e4eb2bd" />
+<img width="3024" height="1964" alt="Screenshot 2025-07-30 at 11 50 49" src="https://github.com/user-attachments/assets/ccaadaf0-975b-46ac-a211-c382b86cd664" />
 
 ## macOS Sequoia (15)
 
