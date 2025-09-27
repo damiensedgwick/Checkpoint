@@ -7,12 +7,14 @@
 
 import Combine
 import Foundation
+import ServiceManagement
 
 @MainActor
 class AppMenuViewModel: ObservableObject {
     @Published var selectedIntervalId: String
     @Published var showingExporter = false
     @Published var exportDocument: CSVDocument?
+    @Published var launchAtLogin = false
 
     var intervals: [Interval] {
         dataManager.availableIntervals
@@ -23,6 +25,7 @@ class AppMenuViewModel: ObservableObject {
     init(dataManager: DataManagingProtocol) {
         self.dataManager = dataManager
         self.selectedIntervalId = dataManager.loadSelectedIntervalId()
+        self.launchAtLogin = SMAppService.mainApp.status == .enabled
     }
 
     convenience init() {
@@ -47,5 +50,31 @@ class AppMenuViewModel: ObservableObject {
     func downloadAllData() {
         exportDocument = dataManager.downloadAllData()
         showingExporter = true
+    }
+
+    func toggleLaunchAtLogin() {
+        if launchAtLogin {
+            disableLaunchAtLogin()
+        } else {
+            enableLaunchAtLogin()
+        }
+    }
+
+    private func enableLaunchAtLogin() {
+        do {
+            try SMAppService.mainApp.register()
+            launchAtLogin = true
+        } catch {
+            print("Failed to enable launch at login: \(error.localizedDescription)")
+        }
+    }
+
+    private func disableLaunchAtLogin() {
+        do {
+            try SMAppService.mainApp.unregister()
+            launchAtLogin = false
+        } catch {
+            print("Failed to disable launch at login: \(error.localizedDescription)")
+        }
     }
 }

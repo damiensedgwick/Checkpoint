@@ -88,9 +88,15 @@ struct AppMenuView: View {
             }
             
             Button(action: {
-                // TODO:
+                viewModel.toggleLaunchAtLogin()
             }) {
-                Label("Launch At Login", systemImage: "autostartstop")
+                HStack {
+                    Label("Launch At Login", systemImage: "autostartstop")
+                    Spacer()
+                    if viewModel.launchAtLogin {
+                        Image(systemName: "checkmark")
+                    }
+                }
             }
             
             Divider()
