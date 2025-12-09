@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1C07CB492EE8260B0031AC5B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1C07CB482EE8260B0031AC5B /* Config.xcconfig */; };
-		1C07CB4B2EE826C50031AC5B /* Config.release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1C07CB4A2EE826C50031AC5B /* Config.release.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
