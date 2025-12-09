@@ -1,2 +1,35 @@
 .DS_Store
+
+# Prevent committing user development team
+# Use `cp Config.xcconfig.template Config.xcconfig` to create
+# the config file and define your personal development team
+Config.xcconfig
+
+## User settings
+xcuserdata/
 *.xcuserstate
+
+## Obj-C/Swift specific
+*.hmap
+
+## App packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+## Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Swift Package Manager
+Packages/
+Package.pins
+Package.resolved
+*.xcodeproj
+
+# Xcode automatically generates this directory with a .xcworkspacedata file and xcuserdata
+# hence it is not needed unless you have added a package configuration file to your project
+# .swiftpm
+
+.build/
+

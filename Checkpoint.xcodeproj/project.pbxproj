@@ -6,7 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1C07CB492EE8260B0031AC5B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1C07CB482EE8260B0031AC5B /* Config.xcconfig */; };
+		1C07CB4B2EE826C50031AC5B /* Config.release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1C07CB4A2EE826C50031AC5B /* Config.release.xcconfig */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		1C07CB482EE8260B0031AC5B /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		1C07CB4A2EE826C50031AC5B /* Config.release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.release.xcconfig; sourceTree = "<group>"; };
 		6213E3C62E77442F006B78AC /* Checkpoint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Checkpoint.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -32,6 +39,8 @@
 		6213E3BD2E77442F006B78AC = {
 			isa = PBXGroup;
 			children = (
+				1C07CB482EE8260B0031AC5B /* Config.xcconfig */,
+				1C07CB4A2EE826C50031AC5B /* Config.release.xcconfig */,
 				6213E3C82E77442F006B78AC /* Checkpoint */,
 				6213E3C72E77442F006B78AC /* Products */,
 			);
@@ -109,6 +118,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C07CB4B2EE826C50031AC5B /* Config.release.xcconfig in Resources */,
+				1C07CB492EE8260B0031AC5B /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,6 +138,7 @@
 /* Begin XCBuildConfiguration section */
 		6213E3CF2E774430006B78AC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1C07CB482EE8260B0031AC5B /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -160,7 +172,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 9PY38T7Q7U;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -191,6 +203,7 @@
 		};
 		6213E3D02E774430006B78AC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1C07CB4A2EE826C50031AC5B /* Config.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -224,7 +237,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 9PY38T7Q7U;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -255,7 +268,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9PY38T7Q7U;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -302,7 +314,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9PY38T7Q7U;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
