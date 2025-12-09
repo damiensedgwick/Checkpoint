@@ -51,6 +51,7 @@ struct CheckpointApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .defaultPosition(.center)
+        .windowLevel(.floating)
 
         Window("View Work Logs", id: "viewlogs") {
             ViewWorkLogsView()
