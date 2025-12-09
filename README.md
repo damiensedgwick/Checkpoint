@@ -20,6 +20,15 @@ set intervals.
 
 <img width="3024" height="1964" alt="Screenshot 2025-07-30 at 11 50 49" src="https://github.com/user-attachments/assets/f7d3642e-7d0f-425e-81f0-359286a6fe81" />
 
+## Development
+
+In the project root, from your terminal, run:
+```sh
+cp Config.xcconfig.template Config.xcconfig
+```
+
+Then add your development team ID after `DEVELOPMENT_TEAM =`.
+
 ## Release Process
 
 1. Archive the project from within Xcode
