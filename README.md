@@ -23,13 +23,15 @@ set intervals.
 ## Development
 
 In the project root, from your terminal, run:
+
 ```sh
 cp Config.xcconfig.template Config.xcconfig
 ```
 
-Then add your development team ID after `DEVELOPMENT_TEAM =`.
+Then add your development team ID after `DEVELOPMENT_TEAM =`. Your ID can be found
+in your Apple Developer portal under Membership Details.
 
-## Release Process
+## Release Process (mental notes for me)
 
 1. Archive the project from within Xcode
 2. Distrubute App > Direct Distribution
